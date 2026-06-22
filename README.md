@@ -5,10 +5,15 @@ Mini application de gestion de cave a vin, installable en PWA et utilisable hors
 ## Fonctionnalites
 
 - Ajout, modification et suppression de bouteilles
-- Recherche, filtre par couleur et tri
-- Statistiques de cave et valeur estimee
+- Ajout rapide avec details avances
+- Recherche, filtres avances et tri
+- Favoris, tags et photos de bouteilles
+- Gestion des emplacements cave / casier / rangee / colonne
+- Consommation de bouteille avec historique des mouvements
+- Alertes intelligentes et statistiques avancees
 - Liste des bouteilles a surveiller
-- Export/import JSON pour sauvegarder les donnees
+- Export/import JSON et CSV pour sauvegarder les donnees
+- Vue imprimable pour inventaire PDF
 - Manifest PWA, icone et service worker
 
 ## Utilisation locale

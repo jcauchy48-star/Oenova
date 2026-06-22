@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#8d223d">
-    <meta name="description" content="Mini application de gestion de cave a vin installable et utilisable hors ligne.">
+    <meta name="description" content="Application PWA de gestion de cave a vin, installable et utilisable hors ligne.">
     <title>Cave a vin</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -19,39 +19,62 @@
           <h1>Cave a vin</h1>
         </div>
         <div class="top-actions">
-          <button class="ghost-action" id="exportButton" type="button">Exporter</button>
-          <button class="ghost-action" id="importButton" type="button">Importer</button>
+          <button class="ghost-action" id="exportButton" type="button">Exporter JSON</button>
+          <button class="ghost-action" id="importButton" type="button">Importer JSON</button>
+          <button class="ghost-action" id="exportCsvButton" type="button">Exporter CSV</button>
+          <button class="ghost-action" id="importCsvButton" type="button">Importer CSV</button>
+          <button class="ghost-action" id="printButton" type="button">Imprimer / PDF</button>
           <button class="ghost-action install-action" id="installButton" type="button" hidden>Installer</button>
           <button class="primary-action" id="openFormButton" type="button">Ajouter une bouteille</button>
           <input id="importFileInput" type="file" accept="application/json,.json" hidden>
+          <input id="importCsvFileInput" type="file" accept=".csv,text/csv" hidden>
         </div>
       </header>
 
-      <section class="stats-grid" aria-label="Résumé de la cave">
+      <section class="stats-grid" aria-label="Resume de la cave">
         <article>
           <span>Bouteilles</span>
           <strong id="statBottles">0</strong>
         </article>
         <article>
-          <span>Références</span>
+          <span>References</span>
           <strong id="statRefs">0</strong>
         </article>
         <article>
-          <span>Valeur estimée</span>
+          <span>Valeur estimee</span>
           <strong id="statValue">0 €</strong>
         </article>
         <article>
-          <span>A boire bientôt</span>
+          <span>A boire bientot</span>
           <strong id="statReady">0</strong>
         </article>
       </section>
 
       <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
 
+      <section class="dashboard-grid" aria-label="Statistiques avancees">
+        <article>
+          <span>Prix d'achat total</span>
+          <strong id="statPurchaseValue">0 €</strong>
+        </article>
+        <article>
+          <span>Gain / perte estime</span>
+          <strong id="statGainLoss">0 €</strong>
+        </article>
+        <article>
+          <span>Depassees</span>
+          <strong id="statExpired">0</strong>
+        </article>
+        <article>
+          <span>Top valeur</span>
+          <strong id="statTopValue">-</strong>
+        </article>
+      </section>
+
       <section class="toolbar" aria-label="Filtres">
         <label class="search-field">
           <span>Recherche</span>
-          <input id="searchInput" type="search" placeholder="Domaine, cuvée, région...">
+          <input id="searchInput" type="search" placeholder="Domaine, cuvee, region, tag...">
         </label>
         <label>
           <span>Couleur</span>
@@ -59,39 +82,123 @@
             <option value="all">Toutes</option>
             <option value="Rouge">Rouge</option>
             <option value="Blanc">Blanc</option>
-            <option value="Rosé">Rosé</option>
+            <option value="Rose">Rose</option>
             <option value="Effervescent">Effervescent</option>
             <option value="Liquoreux">Liquoreux</option>
           </select>
         </label>
         <label>
-          <span>Tri</span>
-          <select id="sortSelect">
-            <option value="drinkWindow">Fenêtre de dégustation</option>
-            <option value="name">Nom</option>
-            <option value="quantity">Quantité</option>
-            <option value="value">Valeur</option>
-            <option value="vintage">Millésime</option>
+          <span>Region</span>
+          <select id="regionFilter">
+            <option value="all">Toutes</option>
           </select>
         </label>
+        <label>
+          <span>Statut</span>
+          <select id="statusFilter">
+            <option value="all">Tous</option>
+            <option value="en cave">En cave</option>
+            <option value="bu">Bu</option>
+            <option value="vendu">Vendu</option>
+            <option value="offert">Offert</option>
+            <option value="reserve">Reserve</option>
+          </select>
+        </label>
+        <label>
+          <span>Degustation</span>
+          <select id="drinkFilter">
+            <option value="all">Toutes</option>
+            <option value="ready">Pretes</option>
+            <option value="soon">Bientot</option>
+            <option value="expired">Depassees</option>
+            <option value="wait">A garder</option>
+          </select>
+        </label>
+        <label>
+          <span>Cave / armoire</span>
+          <select id="cellarFilter">
+            <option value="all">Toutes</option>
+          </select>
+        </label>
+        <label>
+          <span>Casier</span>
+          <select id="rackFilter">
+            <option value="all">Tous</option>
+          </select>
+        </label>
+        <label>
+          <span>Tag</span>
+          <select id="tagFilter">
+            <option value="all">Tous</option>
+          </select>
+        </label>
+        <label>
+          <span>Favoris</span>
+          <select id="favoriteFilter">
+            <option value="all">Tous</option>
+            <option value="yes">Favoris</option>
+          </select>
+        </label>
+        <label>
+          <span>Stock</span>
+          <select id="stockFilter">
+            <option value="all">Tous</option>
+            <option value="low">Stock faible</option>
+          </select>
+        </label>
+        <label>
+          <span>Millesime min.</span>
+          <input id="vintageMinFilter" type="number" min="1900" max="2100" placeholder="Ex. 2010">
+        </label>
+        <label>
+          <span>Millesime max.</span>
+          <input id="vintageMaxFilter" type="number" min="1900" max="2100" placeholder="Ex. 2020">
+        </label>
+        <label>
+          <span>Prix min.</span>
+          <input id="priceMinFilter" type="number" min="0" step="0.01" placeholder="0">
+        </label>
+        <label>
+          <span>Prix max.</span>
+          <input id="priceMaxFilter" type="number" min="0" step="0.01" placeholder="250">
+        </label>
+        <label>
+          <span>Tri</span>
+          <select id="sortSelect">
+            <option value="drinkWindow">Fenetre de degustation</option>
+            <option value="name">Nom</option>
+            <option value="quantity">Quantite</option>
+            <option value="value">Valeur</option>
+            <option value="vintage">Millesime</option>
+            <option value="favorite">Favoris</option>
+          </select>
+        </label>
+        <button class="ghost-action reset-action" id="resetFiltersButton" type="button">Reinitialiser</button>
       </section>
 
       <section class="content-layout">
         <div class="inventory-panel">
           <div class="panel-heading">
             <h2>Inventaire</h2>
-            <span id="resultCount">0 résultat</span>
+            <span id="resultCount">0 resultat</span>
           </div>
+          <div class="compact-stats" id="compactStats"></div>
           <div class="wine-list" id="wineList"></div>
           <div class="empty-state" id="emptyState" hidden>
-            <h3>Aucune bouteille trouvée</h3>
-            <p>Ajoute une référence ou ajuste les filtres pour retrouver tes bouteilles.</p>
+            <h3>Aucune bouteille trouvee</h3>
+            <p>Ajoute une reference ou ajuste les filtres pour retrouver tes bouteilles.</p>
           </div>
         </div>
 
         <aside class="side-panel">
-          <h2>À surveiller</h2>
-          <div id="watchList" class="watch-list"></div>
+          <section>
+            <h2>A surveiller</h2>
+            <div id="watchList" class="watch-list"></div>
+          </section>
+          <section class="history-panel">
+            <h2>Historique</h2>
+            <div id="movementList" class="movement-list"></div>
+          </section>
         </aside>
       </section>
     </main>
@@ -100,73 +207,169 @@
       <form id="wineForm" method="dialog">
         <div class="dialog-heading">
           <h2 id="dialogTitle">Ajouter une bouteille</h2>
-          <button class="icon-button" id="closeDialogButton" type="button" aria-label="Fermer">×</button>
+          <button class="icon-button" id="closeDialogButton" type="button" aria-label="Fermer">x</button>
         </div>
         <input id="wineId" type="hidden">
+        <input id="photoInputHidden" type="hidden">
 
-        <div class="form-grid">
-          <label>
-            Domaine
-            <input id="domainInput" name="domain" required placeholder="Domaine Tempier">
-          </label>
-          <label>
-            Cuvée
-            <input id="cuveeInput" name="cuvee" required placeholder="La Migoua">
-          </label>
-          <label>
-            Couleur
-            <select id="wineColorInput" name="color">
-              <option>Rouge</option>
-              <option>Blanc</option>
-              <option>Rosé</option>
-              <option>Effervescent</option>
-              <option>Liquoreux</option>
-            </select>
-          </label>
-          <label>
-            Région
-            <input id="regionInput" name="region" required placeholder="Bourgogne">
-          </label>
-          <label>
-            Appellation
-            <input id="appellationInput" name="appellation" placeholder="Pauillac">
-          </label>
-          <label>
-            Millésime
-            <input id="vintageInput" name="vintage" type="number" min="1900" max="2100" required>
-          </label>
-          <label>
-            Quantité
-            <input id="quantityInput" name="quantity" type="number" min="1" required>
-          </label>
-          <label>
-            Prix unitaire (€)
-            <input id="priceInput" name="price" type="number" min="0" step="0.01">
-          </label>
-          <label>
-            À boire à partir de
-            <input id="drinkFromInput" name="drinkFrom" type="number" min="1900" max="2100">
-          </label>
-          <label>
-            Jusqu'à
-            <input id="drinkToInput" name="drinkTo" type="number" min="1900" max="2100">
-          </label>
-          <label class="full-width">
-            Emplacement
-            <input id="locationInput" name="location" placeholder="Casier B3, rangée 2">
-          </label>
-          <label class="full-width">
-            Notes
-            <textarea id="notesInput" name="notes" rows="3" placeholder="Accords, dégustation, occasion..."></textarea>
-          </label>
+        <div class="form-section">
+          <h3>Ajout rapide</h3>
+          <div class="form-grid">
+            <label>
+              Domaine
+              <input id="domainInput" name="domain" required placeholder="Domaine Tempier">
+            </label>
+            <label>
+              Cuvee
+              <input id="cuveeInput" name="cuvee" required placeholder="La Migoua">
+            </label>
+            <label>
+              Couleur
+              <select id="wineColorInput" name="color">
+                <option>Rouge</option>
+                <option>Blanc</option>
+                <option>Rose</option>
+                <option>Effervescent</option>
+                <option>Liquoreux</option>
+              </select>
+            </label>
+            <label>
+              Millesime
+              <input id="vintageInput" name="vintage" type="number" min="0" max="2100" placeholder="0 = non millesime">
+            </label>
+            <label>
+              Quantite
+              <input id="quantityInput" name="quantity" type="number" min="0" required>
+            </label>
+            <label>
+              Prix unitaire (€)
+              <input id="priceInput" name="price" type="number" min="0" step="0.01">
+            </label>
+            <label class="full-width">
+              Emplacement
+              <input id="locationInput" name="location" placeholder="Casier B3, rangee 2">
+            </label>
+          </div>
         </div>
+
+        <details class="advanced-details" open>
+          <summary>Details avances</summary>
+          <div class="form-grid">
+            <label>
+              Region
+              <input id="regionInput" name="region" required placeholder="Bourgogne">
+            </label>
+            <label>
+              Appellation
+              <input id="appellationInput" name="appellation" placeholder="Pauillac">
+            </label>
+            <label>
+              Format
+              <select id="formatInput" name="format">
+                <option>75cl</option>
+                <option>37.5cl</option>
+                <option>Magnum</option>
+                <option>Jeroboam</option>
+                <option>autre</option>
+              </select>
+            </label>
+            <label>
+              Statut
+              <select id="statusInput" name="status">
+                <option value="en cave">En cave</option>
+                <option value="bu">Bu</option>
+                <option value="vendu">Vendu</option>
+                <option value="offert">Offert</option>
+                <option value="reserve">Reserve</option>
+              </select>
+            </label>
+            <label>
+              Date d'achat
+              <input id="purchaseDateInput" name="purchaseDate" type="date">
+            </label>
+            <label>
+              Fournisseur
+              <select id="supplierInput" name="supplier">
+                <option value="">Non renseigne</option>
+                <option value="caviste">Caviste</option>
+                <option value="domaine">Domaine</option>
+                <option value="grande distribution">Grande distribution</option>
+                <option value="encheres">Encheres</option>
+                <option value="autre">Autre</option>
+              </select>
+            </label>
+            <label>
+              Prix d'achat (€)
+              <input id="purchasePriceInput" name="purchasePrice" type="number" min="0" step="0.01">
+            </label>
+            <label>
+              Valeur estimee (€)
+              <input id="estimatedValueInput" name="estimatedValue" type="number" min="0" step="0.01">
+            </label>
+            <label>
+              A boire a partir de
+              <input id="drinkFromInput" name="drinkFrom" type="number" min="1900" max="2100">
+            </label>
+            <label>
+              Jusqu'a
+              <input id="drinkToInput" name="drinkTo" type="number" min="1900" max="2100">
+            </label>
+            <label>
+              Cave / armoire
+              <input id="cellarNameInput" name="cellarName" placeholder="Cave principale">
+            </label>
+            <label>
+              Casier
+              <input id="rackInput" name="rack" placeholder="B3">
+            </label>
+            <label>
+              Rangee
+              <input id="rowInput" name="row" placeholder="2">
+            </label>
+            <label>
+              Colonne
+              <input id="columnInput" name="column" placeholder="4">
+            </label>
+            <label>
+              Note personnelle
+              <input id="ratingInput" name="rating" type="number" min="0" max="5" step="0.5">
+            </label>
+            <label>
+              Date de consommation
+              <input id="consumedAtInput" name="consumedAt" type="date">
+            </label>
+            <label class="checkbox-label">
+              <input id="favoriteInput" name="favorite" type="checkbox">
+              Favori
+            </label>
+            <label class="full-width">
+              Tags
+              <input id="tagsInput" name="tags" placeholder="garde, repas, cadeau">
+            </label>
+            <label class="full-width">
+              Notes
+              <textarea id="notesInput" name="notes" rows="3" placeholder="Accords, degustation, occasion..."></textarea>
+            </label>
+            <div class="full-width photo-field">
+              <label>
+                Photo
+                <input id="photoInput" name="photo" type="file" accept="image/*">
+              </label>
+              <div class="photo-preview" id="photoPreview"></div>
+              <button class="ghost-action" id="removePhotoButton" type="button">Supprimer la photo</button>
+            </div>
+          </div>
+        </details>
 
         <div class="dialog-actions">
           <button class="ghost-action" id="deleteButton" type="button" hidden>Supprimer</button>
+          <button class="ghost-action" id="markConsumedFormButton" type="button" hidden>Marquer comme bue</button>
           <button class="primary-action" type="submit">Enregistrer</button>
         </div>
       </form>
     </dialog>
+
+    <section class="print-view" id="printView" aria-hidden="true"></section>
 
     <script src="app.js"></script>
   </body>
