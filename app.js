@@ -555,6 +555,7 @@ let aiEnrichmentQueue = loadAiEnrichmentQueue();
 let adviceFeedback = loadAdviceFeedback();
 let subscriptionState = loadSubscriptionState();
 let authState = loadAuthState();
+let authSession = { accessToken: "", refreshToken: "" };
 let cloudSyncState = loadCloudSyncState();
 let uiPreferences = loadUiPreferences();
 let preferredActiveView = VALID_VIEWS.includes(uiPreferences.activeView)
@@ -1785,7 +1786,11 @@ function normalizeSubscriptionState(state = {}) {
 function loadAuthState() {
   try {
     const parsed = JSON.parse(localStorage.getItem(AUTH_STATE_KEY) || "{}");
-    return normalizeAuthState(parsed);
+    const normalized = normalizeAuthState(parsed);
+    if (parsed?.accessToken || parsed?.refreshToken) {
+      localStorage.setItem(AUTH_STATE_KEY, JSON.stringify(normalized));
+    }
+    return normalized;
   } catch {
     return normalizeAuthState();
   }
@@ -1798,14 +1803,13 @@ function saveAuthState(nextState = authState) {
 
 function clearAuthState() {
   authState = normalizeAuthState();
+  authSession = { accessToken: "", refreshToken: "" };
   localStorage.removeItem(AUTH_STATE_KEY);
 }
 
 function normalizeAuthState(state = {}) {
   return {
     provider: cleanString(state.provider) || "supabase",
-    accessToken: cleanString(state.accessToken),
-    refreshToken: cleanString(state.refreshToken),
     expiresAt: toNumber(state.expiresAt, 0),
     user: state.user && typeof state.user === "object" ? {
       id: cleanString(state.user.id),
@@ -2640,7 +2644,7 @@ function handlePhotoSelection(event) {
     elements.photoInputHidden.value = photoFull;
     elements.photoThumbInputHidden.value = photoThumb;
     renderPhotoPreview(photoFull);
-  }).catch(() => showStatus("Impossible de lire cette image.", "error"));
+  }).catch((error) => showStatus(getPhotoErrorMessage(error), "error"));
 }
 
 function removePhoto() {
@@ -2654,23 +2658,67 @@ function renderPhotoPreview(dataUrl) {
   elements.photoPreview.innerHTML = dataUrl ? `<img src="${escapeAttribute(dataUrl)}" alt="">` : "Aucune photo";
 }
 
-function compressImage(file) {
+function readImageAsDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = reject;
-    reader.onload = () => {
-      const image = new Image();
-      image.onerror = reject;
-      image.onload = () => {
-        resolve({
-          photoFull: resizeImageToDataUrl(image, 720, 0.78),
-          photoThumb: resizeImageToDataUrl(image, 180, 0.66)
-        });
-      };
-      image.src = String(reader.result);
-    };
+    reader.onload = () => resolve(String(reader.result || ""));
     reader.readAsDataURL(file);
   });
+}
+
+function loadImageFromDataUrl(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onerror = reject;
+    image.onload = () => resolve(image);
+    image.src = dataUrl;
+  });
+}
+
+function createImageThumbnail(image) {
+  return resizeImageToDataUrl(image, 180, 0.66);
+}
+
+function validatePhotoSize(dataUrl, limit = PHOTO_WARNING_BYTES) {
+  const bytes = window.OenovaHelpers?.estimateDataUrlBytes
+    ? window.OenovaHelpers.estimateDataUrlBytes(dataUrl)
+    : Math.ceil((String(dataUrl || "").split(",")[1]?.length || 0) * 3 / 4);
+  return {
+    valid: bytes <= limit,
+    bytes,
+    limit
+  };
+}
+
+async function compressImage(file) {
+  const sourceDataUrl = await readImageAsDataUrl(file);
+  const image = await loadImageFromDataUrl(sourceDataUrl);
+  const photoThumb = createImageThumbnail(image);
+  const attempts = [
+    { size: 720, quality: 0.78 },
+    { size: 640, quality: 0.72 },
+    { size: 560, quality: 0.66 },
+    { size: 480, quality: 0.6 }
+  ];
+
+  for (const attempt of attempts) {
+    const photoFull = resizeImageToDataUrl(image, attempt.size, attempt.quality);
+    if (validatePhotoSize(photoFull).valid) {
+      return { photoFull, photoThumb };
+    }
+  }
+
+  const error = new Error("PHOTO_TOO_LARGE");
+  error.code = "PHOTO_TOO_LARGE";
+  throw error;
+}
+
+function getPhotoErrorMessage(error) {
+  if (error?.code === "PHOTO_TOO_LARGE" || error?.message === "PHOTO_TOO_LARGE") {
+    return `Image trop volumineuse. Choisissez une photo plus legere ou recadree, limite ${formatStorageSize(PHOTO_WARNING_BYTES)}.`;
+  }
+  return "Impossible de lire cette image.";
 }
 
 function resizeImageToDataUrl(image, maxSize, quality) {
@@ -3461,21 +3509,6 @@ function renderSyncStatus() {
   const configured = isCloudConfigured();
   const signedIn = isSignedIn();
   const pending = pendingLibrarySyncQueue.length;
-  elements.librarySyncStatus.className = `pill ${pending ? "warning" : configured && signedIn ? "ready" : "neutral"}`;
-  elements.librarySyncStatus.textContent = !configured
-    ? "Mode local"
-    : !signedIn
-      ? "Connexion requise"
-      : pending
-        ? `${pending} en attente`
-        : "Cloud synchronisé";
-}
-
-function renderSyncStatus() {
-  if (!elements.librarySyncStatus) return;
-  const configured = isCloudConfigured();
-  const signedIn = isSignedIn();
-  const pending = pendingLibrarySyncQueue.length;
   const hasRemoteError = Boolean(libraryRemoteState.lastError);
   elements.librarySyncStatus.className = `pill ${libraryRemoteState.isLoading || pending || hasRemoteError ? "warning" : configured ? "ready" : "neutral"}`;
   elements.librarySyncStatus.textContent = !configured
@@ -4032,17 +4065,6 @@ async function searchRemoteWineLibrary(query = "") {
 async function submitWineReference() {
   const reference = createLibraryReferenceFromWine(readWineFromCurrentForm());
   return upsertLibraryReference(reference);
-}
-
-async function syncWineLibrary() {
-  try {
-    const pending = await syncPendingLibraryReferences({ silent: true });
-    const remote = await searchRemoteWineLibrary(elements.librarySearchInput?.value || "");
-    render({ targets: ["library"] });
-    showStatus(`Bibliothèque synchronisée : ${remote.length} référence(s) distante(s), ${pending.pending} en attente.`);
-  } catch (error) {
-    handleCloudError(error, "syncWineLibrary");
-  }
 }
 
 async function syncWineLibrary() {
@@ -4839,7 +4861,7 @@ function handleScanFileSelection(event) {
     render({ targets: ["scanner"] });
   }).catch((error) => {
     logError(error, "handleScanFileSelection");
-    showStatus("Impossible de préparer cette image.", "error");
+    showStatus(getPhotoErrorMessage(error), "error");
   });
 }
 
@@ -5197,10 +5219,10 @@ async function getCurrentSession() {
     if (error) throw error;
     return data?.session || null;
   }
-  if (isSignedIn()) {
+  if (authSession.accessToken && authState.user?.id) {
     return {
-      access_token: authState.accessToken,
-      refresh_token: authState.refreshToken,
+      access_token: authSession.accessToken,
+      refresh_token: authSession.refreshToken,
       expires_at: authState.expiresAt,
       user: authState.user
     };
@@ -5324,7 +5346,8 @@ function renderAccountView() {
 }
 
 function isSignedIn() {
-  return Boolean(authState.accessToken && authState.user?.id);
+  const nowInSeconds = Math.floor(Date.now() / 1000);
+  return Boolean(authState.user?.id && (authSession.accessToken || authState.expiresAt > nowInSeconds));
 }
 
 function normalizeAuthEmail(value) {
@@ -5453,7 +5476,7 @@ async function handleAuthSubmit(event, mode) {
       elements.signUpForm.reset();
       setAuthHelpMessage("");
       renderAuthState();
-      showAuthMessage(data?.session || authState.accessToken
+      showAuthMessage(data?.session || isSignedIn()
         ? "Compte créé et connecté."
         : "Compte créé. Vérifiez votre email si la confirmation est activée.");
       return;
@@ -5564,22 +5587,20 @@ async function refreshCloudSession() {
       const session = await getCurrentSession();
       if (session) saveAuthFromSupabase({ session });
       await refreshCloudDataAfterSession();
-      return;
       renderAuthState();
       showStatus("Session rafraîchie.");
       return;
     }
-    if (!authState.refreshToken) {
+    if (!authSession.refreshToken) {
       render({ targets: ["account"] });
       return;
     }
     const data = await supabaseAuthRequest("/token?grant_type=refresh_token", {
       method: "POST",
-      body: { refresh_token: authState.refreshToken }
+      body: { refresh_token: authSession.refreshToken }
     });
     saveAuthFromSupabase(data);
     await refreshCloudDataAfterSession();
-    return;
     render({ targets: ["account"] });
     showStatus("Session rafraîchie.");
   } catch (error) {
@@ -5596,10 +5617,10 @@ async function signOutUser() {
     const client = await initSupabase();
     if (client?.auth?.signOut) {
       await client.auth.signOut();
-    } else if (isCloudConfigured() && authState.accessToken) {
+    } else if (isCloudConfigured() && authSession.accessToken) {
       await supabaseAuthRequest("/logout", {
         method: "POST",
-        token: authState.accessToken,
+        token: authSession.accessToken,
         allowEmpty: true
       });
     }
@@ -5616,10 +5637,12 @@ function saveAuthFromSupabase(data = {}) {
   const user = data.user || session?.user || {};
   const expiresIn = toNumber(data.expires_in || session?.expires_in, 3600);
   const expiresAt = toNumber(data.expires_at || session?.expires_at, 0) || Math.round(Date.now() / 1000) + expiresIn;
+  authSession = {
+    accessToken: cleanString(data.access_token || session?.access_token),
+    refreshToken: cleanString(data.refresh_token || session?.refresh_token)
+  };
   saveAuthState({
     provider: "supabase",
-    accessToken: data.access_token || session?.access_token || "",
-    refreshToken: data.refresh_token || session?.refresh_token || "",
     expiresAt,
     user: {
       id: user.id,
@@ -5715,7 +5738,6 @@ async function syncLocalToCloud() {
   if (!confirmed) return;
   try {
     await performCloudAutoSync({ reason: "manual-push", silent: false });
-    return;
     showStatus("Cave locale envoyée vers le cloud.");
   } catch (error) {
     handleCloudError(error, "syncLocalToCloud");
@@ -6028,7 +6050,7 @@ async function supabaseAuthRequest(path, options = {}) {
 
 async function supabaseRestRequest(path, options = {}) {
   const url = `${cloudConfig.supabaseUrl}/rest/v1${path}`;
-  const bearer = options.token || authState.accessToken || cloudConfig.supabaseAnonKey;
+  const bearer = options.token || await getCurrentAccessToken() || cloudConfig.supabaseAnonKey;
   const headers = {
     apikey: cloudConfig.supabaseAnonKey,
     Authorization: `Bearer ${bearer}`,
@@ -6041,6 +6063,21 @@ async function supabaseRestRequest(path, options = {}) {
     body: options.body ? JSON.stringify(options.body) : undefined,
     allowEmpty: options.allowEmpty
   });
+}
+
+async function getCurrentAccessToken() {
+  const client = getSupabaseClient();
+  if (client?.auth?.getSession) {
+    const { data, error } = await client.auth.getSession();
+    if (!error && data?.session?.access_token) {
+      authSession = {
+        accessToken: data.session.access_token,
+        refreshToken: data.session.refresh_token || authSession.refreshToken
+      };
+      return data.session.access_token;
+    }
+  }
+  return authSession.accessToken || "";
 }
 
 async function cloudFetch(url, options = {}) {
@@ -6621,11 +6658,19 @@ function csvValue(wine, column) {
 }
 
 function formatCsvValue(value) {
-  const text = String(value ?? "");
+  const text = window.OenovaHelpers?.formatCsvValue
+    ? window.OenovaHelpers.formatCsvValue(value)
+    : sanitizeCsvFormula(value);
+  if (window.OenovaHelpers?.formatCsvValue) return text;
   if (/[;,"\n\r]/.test(text)) {
     return `"${text.replaceAll('"', '""')}"`;
   }
   return text;
+}
+
+function sanitizeCsvFormula(value) {
+  const text = String(value ?? "");
+  return /^[=+\-@]/.test(text) ? `'${text}` : text;
 }
 
 function parseCsv(text) {

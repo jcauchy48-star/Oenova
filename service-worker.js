@@ -1,19 +1,40 @@
-const cacheName = "cave-a-vin-v25";
+const cacheName = "cave-a-vin-v26";
 const cachedFiles = [
   "./",
   "./index.html",
   "./styles.css",
   "./cloud-config-loader.js",
-  "./cloud-config.js",
   "./cloud-config.example.js",
+  "./src/shared-helpers.js",
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg"
 ];
 
+const networkFirstUrls = new Set([
+  new URL("./", self.location.href).pathname,
+  new URL("./index.html", self.location.href).pathname,
+  new URL("./app.js", self.location.href).pathname,
+  new URL("./styles.css", self.location.href).pathname,
+  new URL("./cloud-config-loader.js", self.location.href).pathname,
+  new URL("./src/shared-helpers.js", self.location.href).pathname,
+  new URL("./service-worker.js", self.location.href).pathname
+]);
+
+async function addFileToCache(cache, file) {
+  try {
+    const response = await fetch(file, { cache: "reload" });
+    if (response.ok) await cache.put(file, response);
+  } catch {
+    // Optional assets must not block service worker installation.
+  }
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(cacheName).then((cache) => cache.addAll(cachedFiles))
+    caches.open(cacheName).then((cache) =>
+      Promise.all(cachedFiles.map((file) => addFileToCache(cache, file)))
+    )
   );
   self.skipWaiting();
 });
@@ -27,40 +48,46 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+async function cacheOkResponse(request, response) {
+  if (response?.ok) {
+    const cache = await caches.open(cacheName);
+    await cache.put(request, response.clone());
+  }
+  return response;
+}
+
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok) return cacheOkResponse(request, response);
+    const cached = await caches.match(request);
+    return cached || response;
+  } catch {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    if (request.mode === "navigate") return caches.match("./index.html");
+    return Response.error();
+  }
+}
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  try {
+    const response = await fetch(request);
+    return response.ok ? cacheOkResponse(request, response) : response;
+  } catch {
+    return Response.error();
+  }
+}
+
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   const requestUrl = new URL(event.request.url);
-  const networkFirstPaths = new Set([
-    "/",
-    "/index.html",
-    "/app.js",
-    "/styles.css",
-    "/cloud-config.js",
-    "/cloud-config-loader.js",
-    "/service-worker.js"
-  ]);
-  const shouldUseNetworkFirst = requestUrl.origin === self.location.origin
-    && (event.request.mode === "navigate" || networkFirstPaths.has(requestUrl.pathname));
+  if (requestUrl.origin !== self.location.origin) return;
 
-  event.respondWith(
-    (shouldUseNetworkFirst
-      ? fetch(event.request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(cacheName).then((cache) => cache.put(event.request, clone));
-          return response;
-        })
-        .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html")))
-      : caches.match(event.request).then((cached) => {
-        if (cached) return cached;
+  const shouldUseNetworkFirst = event.request.mode === "navigate"
+    || networkFirstUrls.has(requestUrl.pathname);
 
-        return fetch(event.request)
-          .then((response) => {
-            const clone = response.clone();
-            caches.open(cacheName).then((cache) => cache.put(event.request, clone));
-            return response;
-          })
-          .catch(() => caches.match("./index.html"));
-      }))
-  );
+  event.respondWith(shouldUseNetworkFirst ? networkFirst(event.request) : cacheFirst(event.request));
 });

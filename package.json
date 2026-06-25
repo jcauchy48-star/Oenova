@@ -1,0 +1,13 @@
+{
+  "name": "oenova",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "lint": "eslint app.js service-worker.js cloud-config-loader.js src/**/*.js scripts/**/*.js",
+    "test": "node scripts/verify.js"
+  },
+  "devDependencies": {
+    "eslint": "^9.29.0"
+  }
+}
