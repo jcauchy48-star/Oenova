@@ -1,7 +1,7 @@
 {
-  "name": "Cave a vin",
+  "name": "Cave à vin",
   "short_name": "Cave",
-  "description": "Gestion simple de cave a vin, installable et utilisable hors ligne.",
+  "description": "Gestion simple de cave à vin, installable et utilisable hors ligne.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

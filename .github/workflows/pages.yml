@@ -25,6 +25,18 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Generate cloud config
+        shell: bash
+        env:
+          CAVE_SUPABASE_URL: ${{ secrets.CAVE_SUPABASE_URL || vars.CAVE_SUPABASE_URL }}
+          CAVE_SUPABASE_ANON_KEY: ${{ secrets.CAVE_SUPABASE_ANON_KEY || vars.CAVE_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$CAVE_SUPABASE_URL" ] && [ -n "$CAVE_SUPABASE_ANON_KEY" ]; then
+            node -e 'const fs = require("fs"); const config = { enabled: true, provider: "supabase", supabaseUrl: process.env.CAVE_SUPABASE_URL, supabaseAnonKey: process.env.CAVE_SUPABASE_ANON_KEY }; fs.writeFileSync("cloud-config.js", `window.CAVE_CLOUD_CONFIG = ${JSON.stringify(config, null, 2)};\n`);'
+          else
+            cp cloud-config.example.js cloud-config.js
+            echo "::warning::CAVE_SUPABASE_URL and CAVE_SUPABASE_ANON_KEY are missing. The app will be deployed in local-only mode."
+          fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
