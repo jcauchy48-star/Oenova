@@ -1,7 +1,8 @@
-const cacheName = "cave-a-vin-v26";
+const cacheName = "oenova-v27";
 const cachedFiles = [
   "./",
   "./index.html",
+  "./app.html",
   "./styles.css",
   "./cloud-config-loader.js",
   "./cloud-config.example.js",
@@ -14,6 +15,7 @@ const cachedFiles = [
 const networkFirstUrls = new Set([
   new URL("./", self.location.href).pathname,
   new URL("./index.html", self.location.href).pathname,
+  new URL("./app.html", self.location.href).pathname,
   new URL("./app.js", self.location.href).pathname,
   new URL("./styles.css", self.location.href).pathname,
   new URL("./cloud-config-loader.js", self.location.href).pathname,
