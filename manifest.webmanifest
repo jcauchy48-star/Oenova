@@ -1,11 +1,11 @@
 {
-  "name": "Cave à vin",
-  "short_name": "Cave",
-  "description": "Gestion simple de cave à vin, installable et utilisable hors ligne.",
-  "start_url": "./index.html",
+  "name": "Oenova - Cave à vin",
+  "short_name": "Oenova",
+  "description": "Gestion élégante de cave à vin, installable et utilisable hors ligne.",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f8f3ef",
+  "background_color": "#f7f1e8",
   "theme_color": "#8d223d",
   "orientation": "portrait",
   "icons": [

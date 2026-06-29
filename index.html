@@ -3,1087 +3,249 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#8d223d">
-    <meta name="description" content="Application PWA de gestion de cave à vin, installable et utilisable hors ligne.">
-    <meta name="cave-cloud-config" content="./cloud-config.js">
-    <title>Cave à vin</title>
+    <meta name="theme-color" content="#241417">
+    <meta name="description" content="Oenova transforme votre cave personnelle en collection élégante, suivie et intelligente.">
+    <meta name="robots" content="index, follow">
+    <title>Oenova | Votre cave à vin, enfin maîtrisée</title>
+    <link rel="canonical" href="https://jcauchy48-star.github.io/Oenova/">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
-    <svg class="svg-sprite" aria-hidden="true" focusable="false">
-      <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
-      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-      <symbol id="icon-bottle" viewBox="0 0 24 24"><path d="M10 3h4v5l2 2v9a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-9l2-2V3Z"/><path d="M9 14h6"/></symbol>
-      <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-      <symbol id="icon-dashboard" viewBox="0 0 24 24"><path d="M4 5h7v6H4zM13 5h7v14h-7zM4 13h7v6H4z"/></symbol>
-      <symbol id="icon-inventory" viewBox="0 0 24 24"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
-      <symbol id="icon-cellar" viewBox="0 0 24 24"><path d="M4 20V7l8-4 8 4v13"/><path d="M7 18h10M8 10h8M8 14h8"/><path d="M9 10a2 2 0 0 0 0 4M15 10a2 2 0 0 1 0 4"/></symbol>
-      <symbol id="icon-advice" viewBox="0 0 24 24"><path d="M12 3l1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9l4.3-1.7L12 3Z"/><path d="M18 14l.9 2.1L21 17l-2.1.9L18 20l-.9-2.1L15 17l2.1-.9L18 14Z"/></symbol>
-      <symbol id="icon-assistant" viewBox="0 0 24 24"><path d="M5 6h14v9H8l-3 3V6Z"/><path d="M9 10h6M9 13h3"/></symbol>
-      <symbol id="icon-wishlist" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/><path d="m12 11 1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2L9 13.3l2-.3 1-2Z"/></symbol>
-      <symbol id="icon-history" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8"/><path d="M4 4v4h4M12 8v5l3 2"/></symbol>
-      <symbol id="icon-stats" viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="M3 19h18"/></symbol>
-      <symbol id="icon-transfer" viewBox="0 0 24 24"><path d="M7 7h13m0 0-3-3m3 3-3 3M17 17H4m0 0 3-3m-3 3 3 3"/></symbol>
-      <symbol id="icon-backup" viewBox="0 0 24 24"><path d="M5 8h14v12H5z"/><path d="M7 8V5h10v3M9 12h6"/></symbol>
-      <symbol id="icon-tools" viewBox="0 0 24 24"><path d="M5 7h14M5 17h14"/><path d="M8 7a2 2 0 1 0 0 .1M16 17a2 2 0 1 0 0 .1"/></symbol>
-      <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4 12h2m12 0h2M12 4v2m0 12v2M6.3 6.3l1.4 1.4m8.6 8.6 1.4 1.4m0-11.4-1.4 1.4m-8.6 8.6-1.4 1.4"/></symbol>
-      <symbol id="icon-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
-      <symbol id="icon-more" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01"/></symbol>
-      <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></symbol>
-      <symbol id="icon-glass" viewBox="0 0 24 24"><path d="M8 3h8l-1 8a3 3 0 0 1-6 0L8 3Z"/><path d="M12 14v6M9 20h6"/></symbol>
-      <symbol id="icon-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.2 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3Z"/></symbol>
-      <symbol id="icon-library" viewBox="0 0 24 24"><path d="M5 4h5v16H5zM14 4h5v16h-5z"/><path d="M8 8h1M17 8h1M8 16h1M17 16h1"/></symbol>
-      <symbol id="icon-scan" viewBox="0 0 24 24"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M8 8h8v8H8zM10 12h4"/></symbol>
-      <symbol id="icon-subscription" viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M7 11h4M15 11h2M7 15h8"/></symbol>
-      <symbol id="icon-account" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
-    </svg>
-    <div class="ambient-vines" aria-hidden="true"></div>
-    <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-controls="appSidebar" aria-expanded="false" aria-label="Ouvrir la navigation">
-      <svg class="ui-icon"><use href="#icon-menu"></use></svg>
-    </button>
-    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+  <body class="landing-body">
+    <a class="landing-skip-link" href="#contenu">Aller au contenu</a>
 
-    <div class="app-layout" id="appLayout">
-      <aside class="app-sidebar" id="appSidebar" aria-label="Navigation principale">
-        <div class="sidebar-header">
-          <div class="sidebar-brand" aria-hidden="true"><svg class="ui-icon"><use href="#icon-bottle"></use></svg></div>
-          <div class="sidebar-title">
-            <strong>Cave à vin</strong>
-            <span>Version locale</span>
-          </div>
-          <div class="sidebar-badges" aria-label="Abonnement et scans" data-client-hidden>
-            <span id="sidebarPlanBadge" class="plan-badge">Gratuit</span>
-            <span id="sidebarScanBadge" class="scan-credit-badge">3 scans</span>
-          </div>
-          <button class="icon-button sidebar-close" id="sidebarCloseButton" type="button" aria-label="Fermer la navigation">
-            <svg class="ui-icon"><use href="#icon-close"></use></svg>
-          </button>
-        </div>
-
-        <button class="sidebar-add-action" id="sidebarAddButton" type="button">
-          <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-plus"></use></svg></span>
-          <span class="sidebar-label">Ajouter une bouteille</span>
-        </button>
-
-        <nav class="sidebar-nav" aria-label="Sections de l'application">
-          <p class="sidebar-section-title">Navigation</p>
-          <button class="sidebar-item" type="button" data-view="dashboard" data-nav-key="dashboard">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-dashboard"></use></svg></span>
-            <span class="sidebar-label">Tableau de bord</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="inventory" data-nav-key="inventory">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-inventory"></use></svg></span>
-            <span class="sidebar-label">Inventaire</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="cellar" data-nav-key="cellar">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-cellar"></use></svg></span>
-            <span class="sidebar-label">Cave virtuelle</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="advice" data-nav-key="advice">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-advice"></use></svg></span>
-            <span class="sidebar-label">Suggestions du moment</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="assistant" data-nav-key="assistant">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-assistant"></use></svg></span>
-            <span class="sidebar-label">Sommelier personnel</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="scanner" data-nav-key="scanner">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-scan"></use></svg></span>
-            <span class="sidebar-label">Scanner une bouteille</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="wishlist" data-nav-key="wishlist">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-wishlist"></use></svg></span>
-            <span class="sidebar-label">À acheter</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="history" data-nav-key="history">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-history"></use></svg></span>
-            <span class="sidebar-label">Journal de cave</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="stats" data-nav-key="stats">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-stats"></use></svg></span>
-            <span class="sidebar-label">Statistiques</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="library" data-nav-key="library">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-library"></use></svg></span>
-            <span class="sidebar-label">Bibliothèque</span>
-          </button>
-
-          <p class="sidebar-section-title">Gestion</p>
-          <button class="sidebar-item" type="button" data-view="subscription" data-nav-key="subscription" data-client-hidden>
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-subscription"></use></svg></span>
-            <span class="sidebar-label">Abonnement</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="account" data-nav-key="account">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-account"></use></svg></span>
-            <span class="sidebar-label">Compte client</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="tools" data-nav-key="imports">
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-transfer"></use></svg></span>
-            <span class="sidebar-label">Transfert de cave</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="tools" data-nav-key="backups" data-client-hidden>
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-backup"></use></svg></span>
-            <span class="sidebar-label">Coffre de sauvegarde</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="tools" data-nav-key="tools" data-client-hidden>
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-tools"></use></svg></span>
-            <span class="sidebar-label">Centre de contrôle</span>
-          </button>
-          <button class="sidebar-item" type="button" data-view="settings" data-nav-key="settings" data-client-hidden>
-            <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-settings"></use></svg></span>
-            <span class="sidebar-label">Préférences</span>
-          </button>
+    <header class="landing-header">
+      <div class="landing-header-inner">
+        <a class="landing-brand" href="#accueil" aria-label="Oenova, accueil">
+          <img src="icon.svg" alt="" width="34" height="34">
+          <span>Oenova</span>
+        </a>
+        <nav class="landing-nav" aria-label="Navigation du site">
+          <a href="#fonctionnalites">Fonctionnalités</a>
+          <a href="#demo">Démo</a>
+          <a href="#confidentialite">Confidentialité</a>
+          <a href="#tarifs">Tarifs</a>
+          <a href="#faq">FAQ</a>
         </nav>
+        <a class="landing-header-cta" href="./app.html">Ouvrir l’application</a>
+      </div>
+    </header>
 
-        <button class="sidebar-collapse" id="sidebarCollapseButton" type="button" aria-label="Réduire la navigation" aria-pressed="false">
-          <span class="sidebar-icon"><svg class="ui-icon"><use href="#icon-chevron-left"></use></svg></span>
-          <span class="sidebar-label">Réduire</span>
-        </button>
-      </aside>
-
-      <div class="main-workspace">
-    <main class="app-shell">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">Gestion de cave</p>
-          <h1>Cave à vin</h1>
-          <p class="hero-subtitle">Pilotez votre cave, trouvez les bouteilles à boire et gardez une sauvegarde propre de chaque mouvement.</p>
-        </div>
-        <div class="top-actions">
-          <button class="ghost-action install-action" id="installButton" type="button" hidden>Installer</button>
-          <button class="ghost-action" id="openAccountButton" type="button"><svg class="ui-icon"><use href="#icon-account"></use></svg>Compte</button>
-          <button class="ghost-action" id="openScannerButton" type="button" data-client-hidden><svg class="ui-icon"><use href="#icon-scan"></use></svg>Scanner</button>
-          <button class="primary-action" id="openFormButton" type="button"><svg class="ui-icon"><use href="#icon-plus"></use></svg>Ajouter une bouteille</button>
-        </div>
-      </header>
-
-      <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
-
-      <section class="tools-panel" data-view-section="tools" aria-label="Outils de gestion">
-        <article>
-          <h2>Transfert de cave</h2>
-          <p>Gardez une copie exploitable de votre cave, en JSON, CSV ou PDF imprimable.</p>
-          <div class="tool-actions">
-            <button class="ghost-action" id="exportButton" type="button" data-icon="JSON">Exporter</button>
-            <button class="ghost-action" id="importButton" type="button" data-icon="IN">Importer</button>
-            <button class="ghost-action" id="exportCsvButton" type="button" data-icon="CSV">CSV</button>
-            <button class="ghost-action" id="importCsvButton" type="button" data-icon="CSV">Import CSV</button>
-            <button class="ghost-action" id="printButton" type="button" data-icon="PDF">PDF</button>
-          </div>
-        </article>
-        <article data-client-hidden>
-          <h2>Coffre de sauvegarde</h2>
-          <p>Créer une sauvegarde locale, restaurer une ancienne copie ou exporter un rapport technique.</p>
-          <div class="tool-actions">
-            <button class="ghost-action" id="createBackupButton" type="button" data-icon="SAVE">Sauvegarde</button>
-            <button class="ghost-action" id="restoreBackupButton" type="button" data-icon="REST">Restaurer</button>
-            <button class="ghost-action" id="diagnosticButton" type="button" data-icon="DIAG">Rapport technique</button>
-          </div>
-        </article>
-        <article data-client-hidden>
-          <h2>Centre de contrôle</h2>
-          <p>Suivre les nouveautés, partager un retour et vérifier l'état de la version bêta.</p>
-          <div class="tool-actions">
-            <button class="ghost-action" id="feedbackButton" type="button" data-icon="BETA">Avis</button>
-            <button class="ghost-action" id="changelogButton" type="button" data-icon="NEW">Nouveautés</button>
-          </div>
-        </article>
-      </section>
-
-      <section class="settings-panel" data-view-section="settings" aria-label="Préférences" data-client-hidden>
-        <article class="preference-panel">
-          <div class="panel-title-row">
-            <div>
-              <h2>Personnalisation</h2>
-              <p>Ajustez l'ambiance visuelle sans changer vos données de cave.</p>
+    <main id="contenu">
+      <section class="landing-hero" id="accueil" aria-labelledby="hero-title">
+        <div class="landing-container landing-hero-grid">
+          <div class="landing-hero-copy">
+            <p class="landing-overline">Oenova · Cave personnelle</p>
+            <h1 id="hero-title">Votre cave à vin, enfin maîtrisée.</h1>
+            <p class="landing-hero-lead">Oenova transforme votre cave personnelle en collection élégante, suivie et intelligente.</p>
+            <p class="landing-hero-detail">Inventaire, cave virtuelle, scanner d’étiquettes, notes de dégustation, conseils de garde et sauvegarde cloud optionnelle.</p>
+            <div class="landing-actions">
+              <a class="landing-button landing-button-primary" href="./app.html">Ouvrir l’application</a>
+              <a class="landing-button landing-button-secondary" href="#demo">Voir la démonstration</a>
             </div>
-            <button class="card-action" id="resetPreferencesButton" type="button">Rétablir</button>
+            <ul class="landing-proof-list" aria-label="Avantages principaux">
+              <li>Sans compte obligatoire</li>
+              <li>Disponible hors ligne</li>
+              <li>Export à tout moment</li>
+            </ul>
           </div>
-          <div class="preferences-grid">
-            <label>
-              Densité d'affichage
-              <select id="preferenceDensity" data-ui-preference="density">
-                <option value="compact">Compacte</option>
-                <option value="balanced">Équilibrée</option>
-                <option value="comfortable">Confortable</option>
-              </select>
-            </label>
-            <label>
-              Style des cartes
-              <select id="preferenceCardStyle" data-ui-preference="cardStyle">
-                <option value="classic">Classique</option>
-                <option value="premium">Premium</option>
-                <option value="visual">Visuel</option>
-              </select>
-            </label>
-            <label>
-              Fond
-              <select id="preferenceBackground" data-ui-preference="background">
-                <option value="static">Statique</option>
-                <option value="subtle">Fond texturé</option>
-                <option value="vine">Vignoble statique</option>
-              </select>
-            </label>
-            <label>
-              Animations
-              <select id="preferenceMotion" data-ui-preference="motion">
-                <option value="low">Faibles</option>
-                <option value="normal">Normales</option>
-                <option value="off">Désactivées</option>
-              </select>
-            </label>
-            <label>
-              Taille du texte
-              <select id="preferenceTextScale" data-ui-preference="textScale">
-                <option value="small">Compacte</option>
-                <option value="normal">Normale</option>
-                <option value="large">Large</option>
-              </select>
-            </label>
-            <label>
-              Thème
-              <select id="preferenceTheme" data-ui-preference="theme">
-                <option value="light">Clair premium</option>
-                <option value="dark">Sombre premium</option>
-              </select>
-            </label>
-            <label>
-              Sidebar
-              <select id="preferenceSidebarMode" data-ui-preference="sidebarMode">
-                <option value="open">Ouverte</option>
-                <option value="collapsed">Réduite</option>
-              </select>
-            </label>
-            <label>
-              Vue par défaut
-              <select id="preferenceDefaultView" data-ui-preference="defaultView">
-                <option value="dashboard">Tableau de bord</option>
-                <option value="inventory">Inventaire</option>
-                <option value="cellar">Cave virtuelle</option>
-                <option value="advice">Suggestions du moment</option>
-                <option value="assistant">Sommelier personnel</option>
-                <option value="scanner">Scanner une bouteille</option>
-                <option value="wishlist">À acheter</option>
-                <option value="history">Journal de cave</option>
-                <option value="stats">Statistiques</option>
-                <option value="library">Bibliothèque</option>
-                <option value="subscription">Abonnement</option>
-                <option value="account">Compte client</option>
-                <option value="tools">Transfert de cave</option>
-                <option value="settings">Préférences</option>
-              </select>
-            </label>
-          </div>
-        </article>
-        <article class="dashboard-preferences">
-          <h2>Widgets du dashboard</h2>
-          <p>Gardez la page d'accueil respirante en choisissant les blocs visibles.</p>
-          <div class="toggle-list">
-            <label class="checkbox-label"><input id="preferenceShowInventory" type="checkbox" data-ui-preference="showInventoryWidget"> Aperçu inventaire</label>
-            <label class="checkbox-label"><input id="preferenceShowAdvice" type="checkbox" data-ui-preference="showAdviceWidget"> Suggestions du moment</label>
-            <label class="checkbox-label"><input id="preferenceShowAssistant" type="checkbox" data-ui-preference="showAssistantWidget"> Sommelier personnel</label>
-          </div>
-        </article>
-        <article>
-          <h2>Préférences locales</h2>
-          <p>L'application reste locale pour l'instant : vos données sont stockées dans le navigateur, avec sauvegarde et restauration manuelles.</p>
-        </article>
-        <article class="danger-zone" data-client-hidden>
-          <h2>Zone sensible</h2>
-          <p>Supprime toutes les données locales après double confirmation. Pensez à créer une sauvegarde avant cette action.</p>
-          <button class="ghost-action danger-action" id="clearDataButton" type="button" data-icon="DEL">Tout supprimer</button>
-        </article>
-      </section>
 
-      <input id="importFileInput" type="file" accept="application/json,.json" hidden>
-      <input id="importCsvFileInput" type="file" accept=".csv,text/csv" hidden>
-      <input id="restoreBackupInput" type="file" accept="application/json,.json" hidden>
-      <input id="scanFileInput" type="file" accept="image/*" capture="environment" hidden>
-
-      <section class="stats-grid" data-view-section="dashboard stats" aria-label="Resume de la cave">
-        <article>
-          <span>Bouteilles</span>
-          <strong id="statBottles">0</strong>
-          <small>Stock actif</small>
-        </article>
-        <article>
-          <span>Références</span>
-          <strong id="statRefs">0</strong>
-          <small>Cuvées suivies</small>
-        </article>
-        <article>
-          <span>Valeur estimée</span>
-          <strong id="statValue">0 €</strong>
-          <small>Patrimoine cave</small>
-        </article>
-        <article>
-          <span>À boire bientôt</span>
-          <strong id="statReady">0</strong>
-          <small>Priorités plaisir</small>
-        </article>
-      </section>
-
-      <section class="dashboard-grid" data-view-section="stats" aria-label="Statistiques avancées">
-        <article>
-          <span>Prix d'achat total</span>
-          <strong id="statPurchaseValue">0 €</strong>
-        </article>
-        <article>
-          <span>Gain / perte estimé</span>
-          <strong id="statGainLoss">0 €</strong>
-        </article>
-        <article>
-          <span>Dépassées</span>
-          <strong id="statExpired">0</strong>
-        </article>
-        <article>
-          <span>Top valeur</span>
-          <strong id="statTopValue">-</strong>
-        </article>
-      </section>
-
-      <section class="toolbar" data-view-section="dashboard inventory" aria-label="Filtres">
-        <label class="search-field">
-          <span>Recherche</span>
-          <input id="searchInput" type="search" placeholder="Domaine, cuvée, région, tag...">
-        </label>
-        <label>
-          <span>Couleur</span>
-          <select id="colorFilter">
-            <option value="all">Toutes</option>
-            <option value="Rouge">Rouge</option>
-            <option value="Blanc">Blanc</option>
-            <option value="Rose">Rosé</option>
-            <option value="Effervescent">Effervescent</option>
-            <option value="Liquoreux">Liquoreux</option>
-          </select>
-        </label>
-        <label>
-          <span>Région</span>
-          <select id="regionFilter">
-            <option value="all">Toutes</option>
-          </select>
-        </label>
-        <label>
-          <span>Statut</span>
-          <select id="statusFilter">
-            <option value="all">Tous</option>
-            <option value="en cave">En cave</option>
-            <option value="bu">Bu</option>
-            <option value="vendu">Vendu</option>
-            <option value="offert">Offert</option>
-            <option value="reserve">Réservé</option>
-          </select>
-        </label>
-        <label>
-          <span>Dégustation</span>
-          <select id="drinkFilter">
-            <option value="all">Toutes</option>
-            <option value="ready">Prêtes</option>
-            <option value="soon">Bientôt</option>
-            <option value="expired">Dépassées</option>
-            <option value="wait">À garder</option>
-          </select>
-        </label>
-        <label>
-          <span>Cave / armoire</span>
-          <select id="cellarFilter">
-            <option value="all">Toutes</option>
-          </select>
-        </label>
-        <label>
-          <span>Casier</span>
-          <select id="rackFilter">
-            <option value="all">Tous</option>
-          </select>
-        </label>
-        <label>
-          <span>Tag</span>
-          <select id="tagFilter">
-            <option value="all">Tous</option>
-          </select>
-        </label>
-        <label>
-          <span>Favoris</span>
-          <select id="favoriteFilter">
-            <option value="all">Tous</option>
-            <option value="yes">Favoris</option>
-          </select>
-        </label>
-        <label>
-          <span>Stock</span>
-          <select id="stockFilter">
-            <option value="all">Tous</option>
-            <option value="low">Stock faible</option>
-          </select>
-        </label>
-        <label>
-          <span>Millésime min.</span>
-          <input id="vintageMinFilter" type="number" min="1900" max="2100" placeholder="Ex. 2010">
-        </label>
-        <label>
-          <span>Millésime max.</span>
-          <input id="vintageMaxFilter" type="number" min="1900" max="2100" placeholder="Ex. 2020">
-        </label>
-        <label>
-          <span>Prix min.</span>
-          <input id="priceMinFilter" type="number" min="0" step="0.01" placeholder="0">
-        </label>
-        <label>
-          <span>Prix max.</span>
-          <input id="priceMaxFilter" type="number" min="0" step="0.01" placeholder="250">
-        </label>
-        <label>
-          <span>Valeur min.</span>
-          <input id="valueMinFilter" type="number" min="0" step="0.01" placeholder="0">
-        </label>
-        <label>
-          <span>Valeur max.</span>
-          <input id="valueMaxFilter" type="number" min="0" step="0.01" placeholder="500">
-        </label>
-        <label>
-          <span>Tri</span>
-          <select id="sortSelect">
-            <option value="drinkWindow">Fenêtre de dégustation</option>
-            <option value="name">Nom</option>
-            <option value="quantity">Quantité</option>
-            <option value="value">Valeur</option>
-            <option value="vintage">Millésime</option>
-            <option value="favorite">Favoris</option>
-          </select>
-        </label>
-        <button class="ghost-action reset-action" id="resetFiltersButton" type="button">Réinitialiser</button>
-      </section>
-
-      <section class="module-panel virtual-cellar-panel" data-view-section="cellar" aria-label="Cave virtuelle 2D">
-        <div class="panel-title-row">
-          <div>
-            <p class="eyebrow">Plan de cave</p>
-            <h2>Cave virtuelle</h2>
-            <p>Visualisez vos emplacements, placez les bouteilles et ouvrez les fiches directement depuis le plan.</p>
-          </div>
-          <div class="module-actions">
-            <select id="cellarLayoutSelect" aria-label="Cave ou armoire active"></select>
-            <button class="card-action" id="configureCellarButton" type="button" data-client-hidden>Modifier la configuration</button>
-            <button class="card-action" id="reorganizeCellarButton" type="button">Réorganiser</button>
-          </div>
-        </div>
-
-        <div class="cellar-workbench">
-          <article class="cellar-map-card">
-            <div id="cellarStats" class="cellar-stats"></div>
-            <div id="cellarLegend" class="cellar-legend"></div>
-            <div id="virtualCellarGrid" class="virtual-cellar-grid" role="grid" aria-label="Plan de cave virtuelle"></div>
-          </article>
-
-          <aside class="cellar-side-tools">
-            <form id="cellarConfigForm" class="cellar-config-form" data-client-hidden>
-              <h3>Configurer la cave</h3>
-              <label>
-                Nom
-                <input id="cellarLayoutNameInput" placeholder="Cave principale">
-              </label>
-              <label>
-                Type
-                <select id="cellarLayoutTypeInput">
-                  <option value="cellar">Cave</option>
-                  <option value="cabinet">Armoire</option>
-                  <option value="rack">Casier</option>
-                  <option value="custom">Personnalisé</option>
-                </select>
-              </label>
-              <label>
-                Mode
-                <select id="cellarLayoutModeInput">
-                  <option value="grid">Grille classique</option>
-                  <option value="staggered">Quinconce</option>
-                  <option value="stacked">Superposé</option>
-                  <option value="custom">Personnalisé</option>
-                </select>
-              </label>
-              <div class="cellar-config-grid">
-                <label>Lignes <input id="cellarRowsInput" type="number" min="1" max="30"></label>
-                <label>Colonnes <input id="cellarColumnsInput" type="number" min="1" max="30"></label>
-                <label>Niveaux <input id="cellarLevelsInput" type="number" min="1" max="8"></label>
-                <label>Capacité <input id="cellarSlotCapacityInput" type="number" min="1" max="12"></label>
+          <div class="product-stage" aria-label="Aperçu de l’interface Oenova">
+            <div class="product-window">
+              <div class="product-window-bar">
+                <span class="product-window-brand">OENOVA</span>
+                <span class="product-window-status">Cave locale</span>
               </div>
-              <div class="tool-actions">
-                <button class="primary-action" id="applyCellarConfigButton" type="submit">Appliquer</button>
-                <button class="ghost-action" id="duplicateCellarButton" type="button">Dupliquer</button>
-                <button class="ghost-action danger-text" id="resetCellarLayoutButton" type="button">Réinitialiser</button>
-              </div>
-            </form>
-
-            <section class="unplaced-panel">
-              <div class="panel-title-row compact">
-                <div>
-                  <h3>Bouteilles non positionnées</h3>
-                  <p>Choisissez une bouteille puis cliquez un emplacement disponible.</p>
+              <div class="product-window-layout">
+                <div class="product-mini-nav" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span><span></span><span></span>
                 </div>
-                <span id="unplacedCount" class="pill neutral">0</span>
+                <div class="product-dashboard">
+                  <div class="product-dashboard-head">
+                    <div><small>Bonsoir</small><strong>Votre cave</strong></div>
+                    <span>+ Ajouter</span>
+                  </div>
+                  <div class="product-metrics">
+                    <div><small>Bouteilles</small><strong>128</strong></div>
+                    <div><small>Prêtes</small><strong>24</strong></div>
+                    <div><small>Valeur</small><strong>3 840 €</strong></div>
+                  </div>
+                  <div class="product-content-grid">
+                    <div class="product-bottle-card">
+                      <div class="product-bottle-visual"><span></span></div>
+                      <div>
+                        <small>Bordeaux · 2018</small>
+                        <strong>Château Margaux</strong>
+                        <p>Premier Grand Cru Classé</p>
+                        <div class="product-tags"><span>Prêt à boire</span><span>Casier A4</span></div>
+                      </div>
+                    </div>
+                    <div class="product-cellar-map">
+                      <div class="product-map-head"><strong>Cave virtuelle</strong><span>72 %</span></div>
+                      <div class="product-rack" aria-hidden="true">
+                        <span></span><span class="filled"></span><span></span><span class="filled"></span>
+                        <span class="filled"></span><span></span><span class="filled"></span><span></span>
+                        <span></span><span class="filled"></span><span></span><span class="filled"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="module-toolbar compact-toolbar">
-                <input id="unplacedSearchInput" type="search" placeholder="Rechercher">
-                <select id="unplacedColorFilter" aria-label="Filtrer par couleur">
-                  <option value="all">Toutes</option>
-                  <option value="Rouge">Rouge</option>
-                  <option value="Blanc">Blanc</option>
-                  <option value="Rose">Rosé</option>
-                  <option value="Effervescent">Effervescent</option>
-                  <option value="Liquoreux">Liquoreux</option>
-                </select>
+            </div>
+            <div class="product-stage-caption"><span>Collection suivie</span><strong>Une vue claire, bouteille après bouteille.</strong></div>
+          </div>
+        </div>
+        <a class="landing-next" href="#constat">Découvrir Oenova <span aria-hidden="true">↓</span></a>
+      </section>
+
+      <section class="landing-problem" id="constat" aria-labelledby="problem-title">
+        <div class="landing-container">
+          <div class="landing-section-intro">
+            <p class="landing-overline">Une cave mérite mieux qu’un oubli</p>
+            <h2 id="problem-title">Chaque bouteille a son moment.</h2>
+            <p>Oenova rassemble les informations dispersées pour vous aider à profiter de votre collection avec plus de sérénité.</p>
+          </div>
+          <div class="problem-list">
+            <article><span>01</span><h3>Bouteilles oubliées</h3><p>Retrouvez les cuvées qui arrivent dans leur meilleure fenêtre.</p></article>
+            <article><span>02</span><h3>Millésimes mal suivis</h3><p>Gardez une vision simple de ce qui peut attendre et de ce qui doit être ouvert.</p></article>
+            <article><span>03</span><h3>Tableurs dispersés</h3><p>Remplacez les lignes difficiles à lire par une cave vivante et structurée.</p></article>
+            <article><span>04</span><h3>Choix du moment</h3><p>Trouvez plus facilement la bouteille adaptée au plat ou à l’occasion.</p></article>
+            <article><span>05</span><h3>Sauvegarde incertaine</h3><p>Exportez votre cave quand vous le souhaitez, dans des formats ouverts.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-features" id="fonctionnalites" aria-labelledby="features-title">
+        <div class="landing-container">
+          <div class="landing-section-intro landing-section-intro-split">
+            <div><p class="landing-overline">Pensé pour les amateurs exigeants</p><h2 id="features-title">Tout ce qui compte, à sa place.</h2></div>
+            <p>Une application complète qui reste agréable à utiliser, de la première bouteille à la collection entière.</p>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card feature-card-wide"><span class="feature-index">01</span><h3>Inventaire intelligent</h3><p>Recherchez, filtrez et suivez quantités, valeurs, fenêtres de dégustation et emplacements.</p><em>Vue synthétique</em></article>
+            <article class="feature-card"><span class="feature-index">02</span><h3>Cave virtuelle</h3><p>Visualisez vos armoires, casiers, rangées et colonnes.</p><em>Emplacements précis</em></article>
+            <article class="feature-card"><span class="feature-index">03</span><h3>Scanner assisté</h3><p>Préremplissez une fiche avec une détection locale, complétée manuellement si besoin.</p><em>IA optionnelle</em></article>
+            <article class="feature-card"><span class="feature-index">04</span><h3>Notes de dégustation</h3><p>Conservez vos impressions, accords et envies de rachat.</p><em>Mémoire personnelle</em></article>
+            <article class="feature-card"><span class="feature-index">05</span><h3>Conseils de garde</h3><p>Repérez les vins prêts, à garder ou proches de leur limite.</p><em>Priorités utiles</em></article>
+            <article class="feature-card"><span class="feature-index">06</span><h3>Exports ouverts</h3><p>JSON, CSV et vue PDF imprimable pour ne jamais enfermer vos données.</p><em>Libre à tout moment</em></article>
+            <article class="feature-card"><span class="feature-index">07</span><h3>Cloud optionnel</h3><p>Créez un compte uniquement lorsque vous souhaitez synchroniser votre cave.</p><em>Supabase sécurisé</em></article>
+            <article class="feature-card feature-card-wide"><span class="feature-index">08</span><h3>Mode local et hors ligne</h3><p>Commencez immédiatement. Votre cave reste disponible sur l’appareil, même sans connexion réseau.</p><em>PWA installable</em></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-demo" id="demo" aria-labelledby="demo-title">
+        <div class="landing-container">
+          <div class="landing-section-intro demo-intro">
+            <p class="landing-overline">Démonstration</p>
+            <h2 id="demo-title">Votre collection, sous le bon angle.</h2>
+            <p>Quatre vues complémentaires pour décider, retrouver et comprendre sans surcharger l’écran.</p>
+          </div>
+          <div class="demo-gallery">
+            <article class="demo-screen demo-screen-dashboard">
+              <div class="demo-screen-top"><span>Tableau de bord</span><b>Vue d’ensemble</b></div>
+              <div class="demo-stat-row"><span><small>En cave</small><strong>128</strong></span><span><small>À boire</small><strong>24</strong></span><span><small>Favoris</small><strong>11</strong></span></div>
+              <div class="demo-chart" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </article>
+            <article class="demo-screen demo-screen-bottle">
+              <div class="demo-screen-top"><span>Fiche bouteille</span><b>Détails utiles</b></div>
+              <div class="demo-bottle-layout"><div class="demo-bottle-shape"><i></i></div><div><small>Saint-Émilion Grand Cru</small><h3>Château Canon</h3><p>2019 · Rouge · Magnum</p><hr><b>À garder jusqu’en 2038</b></div></div>
+            </article>
+            <article class="demo-screen demo-screen-cellar">
+              <div class="demo-screen-top"><span>Cave virtuelle</span><b>Armoire principale</b></div>
+              <div class="demo-large-rack" aria-hidden="true">
+                <i></i><i class="wine-red"></i><i></i><i class="wine-gold"></i><i class="wine-red"></i><i></i>
+                <i class="wine-red"></i><i></i><i></i><i class="wine-gold"></i><i></i><i class="wine-red"></i>
+                <i></i><i class="wine-gold"></i><i class="wine-red"></i><i></i><i class="wine-red"></i><i></i>
               </div>
-              <div id="unplacedWineList" class="unplaced-wine-list"></div>
-            </section>
-          </aside>
+            </article>
+            <article class="demo-screen demo-screen-scan">
+              <div class="demo-screen-top"><span>Scanner</span><b>Analyse locale</b></div>
+              <div class="demo-scan-frame"><div class="demo-label"><small>APPELLATION</small><strong>OENOVA</strong><span>GRAND VIN · 2018</span></div><i></i></div>
+              <p>Détection limitée · vérification avant ajout</p>
+            </article>
+          </div>
+          <div class="demo-action"><a class="landing-button landing-button-primary" href="./app.html">Explorer l’application</a></div>
         </div>
       </section>
 
-      <section class="module-panel library-panel" data-view-section="library" aria-label="Bibliothèque de vins">
-        <div class="panel-title-row">
-          <div>
-            <p class="eyebrow">Références locales</p>
-            <h2>Bibliothèque de vins</h2>
-            <p>Des fiches réutilisables, alimentées par vos ajouts et synchronisables avec la bibliothèque commune Supabase.</p>
-          </div>
-          <div class="module-actions">
-            <span id="libraryCount" class="pill neutral">0 référence</span>
-            <span id="librarySyncStatus" class="pill neutral">Mode local</span>
-            <button class="card-action" id="libraryImportButton" type="button" data-client-hidden>Importer des références</button>
-          </div>
-        </div>
-        <input id="libraryImportFileInput" type="file" accept=".csv,.json,text/csv,application/json" hidden>
-        <div class="module-toolbar">
-          <label class="search-field">
-            <span>Recherche</span>
-            <input id="librarySearchInput" type="search" placeholder="Rechercher dans la bibliothèque et la base vins...">
-          </label>
-          <label>
-            <span>Couleur</span>
-            <select id="libraryColorFilter"><option value="all">Toutes</option></select>
-          </label>
-          <label>
-            <span>Région</span>
-            <select id="libraryRegionFilter"><option value="all">Toutes</option></select>
-          </label>
-          <label>
-            <span>Appellation</span>
-            <select id="libraryAppellationFilter"><option value="all">Toutes</option></select>
-          </label>
-        </div>
-        <p id="libraryImportResult" class="muted-note" role="status" aria-live="polite"></p>
-        <div id="libraryAdminTools" class="library-admin-tools" aria-label="Etat de la recherche bibliotheque" data-client-hidden></div>
-        <div id="libraryList" class="library-list"></div>
-      </section>
-
-      <section class="module-panel scan-panel" data-view-section="scanner" aria-label="Scanner une bouteille">
-        <div class="panel-title-row">
-          <div>
-            <p class="eyebrow">Scan assisté</p>
-            <h2>Scanner une bouteille</h2>
-            <p>Photo mobile ou import PC. Le scan préremplit une fiche, mais vous validez toujours avant ajout.</p>
-          </div>
-          <span id="scanCreditsLabel" class="pill warning">IA non configurée · Analyse locale</span>
-        </div>
-        <div class="scan-layout">
-          <article class="scan-card">
-            <div id="scanPreview" class="scan-preview"><p>Aucune photo sélectionnée.</p></div>
-            <div class="tool-actions">
-              <button class="primary-action" id="scanPhotoButton" type="button"><svg class="ui-icon"><use href="#icon-scan"></use></svg>Prendre une photo</button>
-              <button class="ghost-action" id="scanImportButton" type="button">Importer une photo</button>
-            </div>
-            <label>
-              Texte de l'étiquette
-              <textarea id="scanManualText" rows="5" placeholder="Collez ici le texte lisible si l'analyse automatique n'est pas disponible."></textarea>
-            </label>
-            <button class="primary-action" id="scanAnalyzeButton" type="button">Analyser l'étiquette</button>
-          </article>
-          <article class="scan-card">
-            <h3>Résultat</h3>
-            <div id="scanResult" class="scan-result"></div>
-            <div class="tool-actions">
-              <button class="primary-action" id="scanUseButton" type="button" hidden>Utiliser ces informations</button>
-              <button class="ghost-action" id="scanManualButton" type="button">Corriger manuellement</button>
-            </div>
-          </article>
+      <section class="landing-trust" id="confidentialite" aria-labelledby="trust-title">
+        <div class="landing-container landing-trust-grid">
+          <div class="trust-statement"><p class="landing-overline">Confidentialité par défaut</p><h2 id="trust-title">Vos données restent sous votre contrôle.</h2><p>Oenova privilégie une approche locale et transparente. Le cloud n’est jamais une condition pour commencer.</p></div>
+          <ul class="trust-list">
+            <li><span>01</span><strong>Oenova fonctionne localement par défaut.</strong></li>
+            <li><span>02</span><strong>Aucun compte obligatoire pour commencer.</strong></li>
+            <li><span>03</span><strong>Export possible à tout moment.</strong></li>
+            <li><span>04</span><strong>La synchronisation cloud est optionnelle.</strong></li>
+          </ul>
         </div>
       </section>
 
-      <section class="module-panel subscription-panel" data-view-section="subscription" aria-label="Abonnement" data-client-hidden>
-        <div class="panel-title-row">
-          <div>
-            <p class="eyebrow">Offre bêta</p>
-            <h2>Abonnement</h2>
-            <p>Préparation commerciale sans paiement réel tant qu'aucun backend sécurisé n'est configuré.</p>
+      <section class="landing-install" id="installation" aria-labelledby="install-title">
+        <div class="landing-container install-layout">
+          <div class="install-copy">
+            <p class="landing-overline">Installation PWA</p>
+            <h2 id="install-title">Oenova, toujours à portée de main.</h2>
+            <p>La version actuelle s’installe directement depuis votre navigateur. Aucun App Store n’est nécessaire.</p>
+            <a class="landing-button landing-button-primary" href="./app.html">Ouvrir l’application</a>
           </div>
-          <div class="subscription-summary">
-            <span id="subscriptionPlanBadge" class="plan-badge">Gratuit</span>
-            <span id="subscriptionScanCredits" class="scan-credit-badge">3 scans restants</span>
-          </div>
-        </div>
-        <div id="pricingPlans" class="pricing-grid"></div>
-        <div class="panel-title-row scan-pack-heading">
-          <div>
-            <h2>Packs scans IA</h2>
-            <p>Achat ponctuel prévu pour plus tard via backend.</p>
-          </div>
-          <button class="card-action" id="billingPortalButton" type="button">Portail de facturation</button>
-        </div>
-        <div id="scanPacks" class="scan-pack-grid"></div>
-      </section>
-
-      <section class="module-panel account-view-panel" data-view-section="account" aria-label="Compte client">
-        <div class="panel-title-row">
-          <div>
-            <p class="eyebrow">Compte client</p>
-            <h2>Connexion et synchronisation cloud</h2>
-            <p>Le mode local reste disponible. Avec un compte, votre cave personnelle est sauvegardée dans Supabase et synchronisée après chaque modification.</p>
-          </div>
-          <span id="cloudConfigStatus" class="pill warning">Cloud non configuré</span>
-        </div>
-
-        <article id="accountStatusCard" class="account-status-card">
-          <div>
-            <span class="pill neutral" id="accountProvider">Mode local</span>
-            <h3 id="accountEmail">Aucun compte connecté</h3>
-            <p>Dernière synchronisation : <strong id="cloudLastSync">Jamais</strong></p>
-            <p id="cloudLastError" class="muted-note"></p>
-          </div>
-          <div class="tool-actions">
-            <button class="card-action" id="refreshCloudButton" type="button">Rafraîchir</button>
-            <button class="card-action danger-text" id="signOutButton" type="button">Déconnexion</button>
-          </div>
-        </article>
-
-        <article class="account-card cloud-setup-card" data-client-hidden>
-          <div class="panel-title-row">
-            <div>
-              <h3>Mise en service cloud</h3>
-              <p>Checklist pour activer les vrais comptes client sur la version web.</p>
-            </div>
-            <span class="pill neutral">Supabase</span>
-          </div>
-          <ol class="setup-list">
-            <li>Créer le projet Supabase.</li>
-            <li>Exécuter les fichiers du dépôt <code>supabase/schema.sql</code> puis <code>supabase/seed.sql</code> dans Supabase.</li>
-            <li>Vérifier <code>cloud-config.js</code> avec l'URL projet et la clé publishable.</li>
-            <li>Ne jamais placer une clé service_role ou secrète dans le frontend.</li>
-            <li>Recharger l'app puis créer un compte de test.</li>
+          <ol class="install-steps">
+            <li><span>01</span><div><strong>Sur ordinateur</strong><p>Ouvrez l’app, puis utilisez l’option d’installation proposée par votre navigateur.</p></div></li>
+            <li><span>02</span><div><strong>Sur mobile</strong><p>Ouvrez l’app, puis choisissez « Ajouter à l’écran d’accueil » dans le menu du navigateur.</p></div></li>
+            <li><span>03</span><div><strong>Une fois installée</strong><p>Lancez Oenova comme une application et retrouvez votre cave, même hors ligne.</p></div></li>
           </ol>
-        </article>
-
-        <div id="authForms" class="account-grid">
-          <form id="signInForm" class="account-card">
-            <h3>Se connecter</h3>
-            <label>Email <input id="signInEmail" type="email" autocomplete="email" placeholder="vous@email.fr"></label>
-            <label>Mot de passe <input id="signInPassword" type="password" autocomplete="current-password"></label>
-            <button class="primary-action" type="submit">Connexion</button>
-            <div class="tool-actions">
-              <button class="card-action" id="resetPasswordButton" type="button">Mot de passe oublie</button>
-              <button class="card-action" id="resendConfirmationButton" type="button">Renvoyer confirmation</button>
-            </div>
-            <p id="authHelpMessage" class="muted-note" role="status" aria-live="polite"></p>
-            <p class="muted-note">Disponible dès que Supabase est configuré.</p>
-          </form>
-
-          <form id="signUpForm" class="account-card">
-            <h3>Créer un compte</h3>
-            <label>Nom affiché <input id="signUpDisplayName" type="text" autocomplete="name" placeholder="Jean"></label>
-            <label>Email <input id="signUpEmail" type="email" autocomplete="email" placeholder="vous@email.fr"></label>
-            <label>Mot de passe <input id="signUpPassword" type="password" autocomplete="new-password" minlength="8"></label>
-            <button class="primary-action" type="submit">Créer mon compte</button>
-            <p class="muted-note">Aucune donnée bancaire n'est demandée ici.</p>
-          </form>
-        </div>
-
-        <div id="accountPanel" class="account-grid" hidden>
-          <article class="account-card">
-            <h3>Synchroniser maintenant</h3>
-            <p>Force l’envoi immédiat de vos bouteilles, mouvements, wishlist, notes et emplacements vers votre compte cloud.</p>
-            <button class="primary-action" id="syncLocalToCloudButton" type="button">Synchroniser maintenant</button>
-          </article>
-          <article class="account-card">
-            <h3>Restaurer depuis le cloud</h3>
-            <p>Récupère la dernière version cloud après création automatique d'une sauvegarde locale.</p>
-            <button class="ghost-action" id="restoreCloudButton" type="button">Restaurer depuis le cloud</button>
-          </article>
         </div>
       </section>
 
-      <section class="content-layout" data-view-section="dashboard inventory advice assistant wishlist history stats tools settings">
-        <div class="inventory-panel" data-view-section="dashboard inventory stats" data-dashboard-widget="inventory">
-          <div class="panel-heading">
-            <h2>Inventaire</h2>
-            <span id="resultCount">0 résultat</span>
+      <section class="landing-pricing" id="tarifs" aria-labelledby="pricing-title">
+        <div class="landing-container">
+          <div class="landing-section-intro">
+            <p class="landing-overline">Tarifs</p>
+            <h2 id="pricing-title">Commencez librement.</h2>
+            <p>Le cœur d’Oenova est accessible gratuitement en local. Les offres connectées sont encore en préparation.</p>
           </div>
-          <div class="compact-stats" id="compactStats"></div>
-          <div class="wine-list" id="wineList"></div>
-          <div class="empty-state" id="emptyState" hidden>
-            <h3>Aucun vin trouvé</h3>
-            <p>Ajoute une référence ou ajuste les filtres pour retrouver tes bouteilles.</p>
-            <button class="primary-action" id="emptyAddButton" type="button"><svg class="ui-icon"><use href="#icon-plus"></use></svg>Ajouter une bouteille</button>
+          <div class="landing-pricing-grid">
+            <article class="landing-pricing-card landing-pricing-card-current"><span class="landing-pricing-label">Disponible</span><h3>Local</h3><p class="landing-pricing-price">Gratuit</p><ul><li>Inventaire complet</li><li>Cave virtuelle</li><li>Exports JSON, CSV et PDF</li><li>Fonctionnement hors ligne</li></ul><a class="landing-button landing-button-primary" href="./app.html">Ouvrir Oenova</a></article>
+            <article class="landing-pricing-card"><span class="landing-pricing-label">Bientôt</span><h3>Premium</h3><p class="landing-pricing-price">À venir</p><ul><li>Synchronisation cloud enrichie</li><li>Scanner IA avancé</li><li>Conseils personnalisés</li><li>Continuité multi-appareils</li></ul><span class="landing-pricing-placeholder">En préparation</span></article>
+            <article class="landing-pricing-card"><span class="landing-pricing-label">Bientôt</span><h3>Collectionneur</h3><p class="landing-pricing-price">À venir</p><ul><li>Rapports avancés</li><li>Valorisation de cave</li><li>Statistiques approfondies</li><li>Outils de collection</li></ul><span class="landing-pricing-placeholder">En préparation</span></article>
+          </div>
+          <p class="landing-pricing-notice">Les offres premium sont en préparation. Aucun paiement réel n’est actif actuellement.</p>
+        </div>
+      </section>
+
+      <section class="landing-faq" id="faq" aria-labelledby="faq-title">
+        <div class="landing-container faq-layout">
+          <div class="faq-heading"><p class="landing-overline">Questions fréquentes</p><h2 id="faq-title">Avant d’ouvrir votre cave.</h2><p>Des réponses simples sur le fonctionnement actuel d’Oenova.</p></div>
+          <div class="faq-list">
+            <details open><summary>Est-ce gratuit ?</summary><p>Oui. Le mode local actuel est gratuit et aucun paiement réel n’est activé.</p></details>
+            <details><summary>Dois-je créer un compte ?</summary><p>Non. Vous pouvez utiliser Oenova localement sans compte. Un compte devient utile uniquement pour les fonctions cloud optionnelles.</p></details>
+            <details><summary>Mes données sont-elles privées ?</summary><p>Elles restent dans votre navigateur en mode local. Vous gardez la possibilité de les exporter à tout moment.</p></details>
+            <details><summary>L’application fonctionne-t-elle hors ligne ?</summary><p>Oui. Oenova est une PWA et conserve les fichiers nécessaires pour continuer à fonctionner hors connexion après une première ouverture.</p></details>
+            <details><summary>Puis-je exporter ma cave ?</summary><p>Oui. Les exports JSON, CSV et la vue imprimable PDF sont disponibles depuis l’application.</p></details>
+            <details><summary>Le scanner IA est-il disponible ?</summary><p>Une analyse locale limitée est disponible. L’analyse IA distante reste optionnelle et n’est utilisée que lorsqu’un service sécurisé est configuré.</p></details>
+            <details><summary>Comment installer l’application ?</summary><p>Ouvrez l’application puis utilisez l’option « Installer » ou « Ajouter à l’écran d’accueil » de votre navigateur.</p></details>
+            <details><summary>Y aura-t-il une version mobile native ?</summary><p>Elle pourra être étudiée plus tard. Pour l’instant, la PWA offre une expérience installable sur ordinateur et mobile.</p></details>
           </div>
         </div>
-
-        <aside class="side-panel" data-view-section="dashboard advice assistant wishlist history tools settings">
-          <section class="advice-panel" data-view-section="dashboard advice" data-dashboard-widget="advice">
-            <h2>Suggestions du moment</h2>
-            <div id="watchList" class="watch-list"></div>
-          </section>
-          <section class="cellar-preview-panel" data-view-section="dashboard" data-dashboard-widget="cellar">
-            <div class="panel-title-row compact">
-              <h2>Cave virtuelle</h2>
-              <button class="card-action" id="openCellarFromDashboard" type="button">Ouvrir</button>
-            </div>
-            <div id="cellarPreview" class="cellar-preview"></div>
-          </section>
-          <section class="assistant-panel" data-view-section="dashboard assistant" data-dashboard-widget="assistant">
-            <h2>Sommelier personnel</h2>
-            <label>
-              Quel plat, occasion ou envie ?
-              <textarea id="adviceQuestionInput" rows="3" placeholder="Ex. viande rouge, fromage, grande occasion..."></textarea>
-            </label>
-            <div class="quick-advice-actions">
-              <button class="card-action" type="button" data-advice="Viande rouge">Viande rouge</button>
-              <button class="card-action" type="button" data-advice="Poisson">Poisson</button>
-              <button class="card-action" type="button" data-advice="Fromage">Fromage</button>
-              <button class="card-action" type="button" data-advice="Apéritif">Apéritif</button>
-              <button class="card-action" type="button" data-advice="À boire maintenant">À boire maintenant</button>
-              <button class="card-action" type="button" data-advice="Grande occasion">Grande occasion</button>
-            </div>
-            <button class="primary-action" id="askAdviceButton" type="button">Demander conseil</button>
-            <div id="adviceResult" class="advice-result"></div>
-          </section>
-          <section class="wishlist-panel" data-view-section="wishlist">
-            <div class="panel-title-row">
-              <h2>À acheter</h2>
-              <button class="card-action" id="openWishlistButton" type="button">Ajouter</button>
-            </div>
-            <div id="wishlistList" class="wishlist-list"></div>
-          </section>
-          <section class="history-panel" data-view-section="history">
-            <h2>Journal de cave</h2>
-            <div id="movementList" class="movement-list"></div>
-          </section>
-          <section class="beta-panel" data-view-section="tools settings" data-client-hidden>
-            <h2>État bêta</h2>
-            <div id="betaState" class="beta-state"></div>
-          </section>
-        </aside>
       </section>
-      <footer class="app-footer">
-        <span id="appVersion">Version bêta 0.1.0</span>
-      </footer>
+
+      <section class="landing-final-cta" aria-labelledby="final-title">
+        <div class="landing-container">
+          <p class="landing-overline">Votre collection vous attend</p>
+          <h2 id="final-title">Une cave plus claire commence par une bouteille.</h2>
+          <a class="landing-button landing-button-light" href="./app.html">Ouvrir l’application</a>
+        </div>
+      </section>
     </main>
+
+    <footer class="landing-footer">
+      <div class="landing-container landing-footer-grid">
+        <div><a class="landing-brand landing-footer-brand" href="#accueil"><img src="icon.svg" alt="" width="32" height="32"><span>Oenova</span></a><p>Application de gestion de cave à vin.</p></div>
+        <div class="landing-footer-links"><a href="./app.html">Ouvrir l’application</a><a href="./docs/security.md">Confidentialité et sécurité</a><a href="./docs/technical-roadmap.md">Feuille de route technique</a></div>
+        <div class="landing-footer-meta"><span>Version bêta</span><p>Conçu pour suivre, comprendre et apprécier chaque bouteille.</p></div>
       </div>
-    </div>
-
-    <dialog id="wineDialog">
-      <form id="wineForm" method="dialog">
-        <div class="dialog-heading">
-          <h2 id="dialogTitle">Ajouter une bouteille</h2>
-          <button class="icon-button" id="closeDialogButton" type="button" aria-label="Fermer"><svg class="ui-icon"><use href="#icon-close"></use></svg></button>
-        </div>
-        <input id="wineId" type="hidden">
-        <input id="photoInputHidden" type="hidden">
-        <input id="photoThumbInputHidden" type="hidden">
-        <input id="cellarLayoutIdInput" type="hidden">
-        <input id="slotIdInput" type="hidden">
-        <input id="positionLabelInput" type="hidden">
-
-        <div class="form-section">
-          <h3>Ajout rapide</h3>
-          <div class="form-grid">
-            <label>
-              Domaine
-              <input id="domainInput" name="domain" required placeholder="Domaine Tempier">
-            </label>
-            <label>
-              Cuvée
-              <input id="cuveeInput" name="cuvee" required placeholder="La Migoua">
-            </label>
-            <div id="librarySuggestions" class="library-suggestions full-width" hidden></div>
-            <label>
-              Couleur
-              <select id="wineColorInput" name="color">
-                <option>Rouge</option>
-                <option>Blanc</option>
-                <option value="Rose">Rosé</option>
-                <option>Effervescent</option>
-                <option>Liquoreux</option>
-              </select>
-            </label>
-            <label>
-              Millésime
-              <input id="vintageInput" name="vintage" type="number" min="0" max="2100" placeholder="0 = non millésimé">
-            </label>
-            <label>
-              Quantité
-              <input id="quantityInput" name="quantity" type="number" min="0" required>
-            </label>
-            <label>
-              Prix unitaire (€)
-              <input id="priceInput" name="price" type="number" min="0" step="0.01">
-            </label>
-            <label class="full-width">
-              Emplacement
-              <input id="locationInput" name="location" placeholder="Casier B3, rangée 2">
-            </label>
-          </div>
-        </div>
-
-        <details class="advanced-details" open>
-          <summary>Détails avancés</summary>
-          <div class="form-grid">
-            <label>
-              Région
-              <input id="regionInput" name="region" required placeholder="Bourgogne">
-            </label>
-            <label>
-              Appellation
-              <input id="appellationInput" name="appellation" placeholder="Pauillac">
-            </label>
-            <label>
-              Format
-              <select id="formatInput" name="format">
-                <option>75cl</option>
-                <option>37.5cl</option>
-                <option>Magnum</option>
-                <option>Jeroboam</option>
-                <option>autre</option>
-              </select>
-            </label>
-            <label>
-              Statut
-              <select id="statusInput" name="status">
-                <option value="en cave">En cave</option>
-                <option value="bu">Bu</option>
-                <option value="vendu">Vendu</option>
-                <option value="offert">Offert</option>
-                <option value="reserve">Réservé</option>
-              </select>
-            </label>
-            <label>
-              Date d'achat
-              <input id="purchaseDateInput" name="purchaseDate" type="date">
-            </label>
-            <label>
-              Fournisseur
-              <select id="supplierInput" name="supplier">
-                <option value="">Non renseigné</option>
-                <option value="caviste">Caviste</option>
-                <option value="domaine">Domaine</option>
-                <option value="grande distribution">Grande distribution</option>
-                <option value="encheres">Enchères</option>
-                <option value="autre">Autre</option>
-              </select>
-            </label>
-            <label>
-              Prix d'achat (€)
-              <input id="purchasePriceInput" name="purchasePrice" type="number" min="0" step="0.01">
-            </label>
-            <label>
-              Valeur estimée (€)
-              <input id="estimatedValueInput" name="estimatedValue" type="number" min="0" step="0.01">
-            </label>
-            <label>
-              À boire à partir de
-              <input id="drinkFromInput" name="drinkFrom" type="number" min="1900" max="2100">
-            </label>
-            <label>
-              Jusqu'à
-              <input id="drinkToInput" name="drinkTo" type="number" min="1900" max="2100">
-            </label>
-            <label>
-              Cave / armoire
-              <input id="cellarNameInput" name="cellarName" placeholder="Cave principale">
-            </label>
-            <div class="full-width slot-picker-field">
-              <div>
-                <span>Emplacement dans la cave virtuelle</span>
-                <strong id="selectedSlotLabel">Emplacement non défini</strong>
-              </div>
-              <div class="tool-actions">
-                <button class="card-action" id="chooseSlotButton" type="button">Choisir sur le plan</button>
-                <button class="card-action" id="clearSlotButton" type="button">Retirer</button>
-              </div>
-            </div>
-            <label>
-              Casier
-              <input id="rackInput" name="rack" placeholder="B3">
-            </label>
-            <label>
-              Rangée
-              <input id="rowInput" name="row" placeholder="2">
-            </label>
-            <label>
-              Colonne
-              <input id="columnInput" name="column" placeholder="4">
-            </label>
-            <label>
-              Note personnelle
-              <input id="ratingInput" name="rating" type="number" min="0" max="5" step="0.5">
-            </label>
-            <label>
-              Date de consommation
-              <input id="consumedAtInput" name="consumedAt" type="date">
-            </label>
-            <label class="checkbox-label">
-              <input id="favoriteInput" name="favorite" type="checkbox">
-              Favori
-            </label>
-            <label class="full-width">
-              Tags
-              <input id="tagsInput" name="tags" placeholder="garde, repas, cadeau">
-            </label>
-            <label class="full-width">
-              Notes
-              <textarea id="notesInput" name="notes" rows="3" placeholder="Accords, dégustation, occasion..."></textarea>
-            </label>
-            <div class="full-width photo-field">
-              <label>
-                Photo
-                <input id="photoInput" name="photo" type="file" accept="image/*">
-              </label>
-              <div class="photo-preview" id="photoPreview"></div>
-              <button class="ghost-action" id="removePhotoButton" type="button">Supprimer la photo</button>
-            </div>
-          </div>
-        </details>
-
-        <div class="dialog-actions">
-          <button class="ghost-action" id="deleteButton" type="button" hidden>Supprimer</button>
-          <button class="ghost-action" id="markConsumedFormButton" type="button" hidden>Marquer comme bue</button>
-          <button class="primary-action" type="submit">Enregistrer</button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="wineDetailDialog">
-      <div class="detail-shell">
-        <div class="dialog-heading">
-          <h2 id="detailTitle">Fiche bouteille</h2>
-          <button class="icon-button" id="closeDetailButton" type="button" aria-label="Fermer"><svg class="ui-icon"><use href="#icon-close"></use></svg></button>
-        </div>
-        <div id="wineDetailContent"></div>
-      </div>
-    </dialog>
-
-    <dialog id="wishlistDialog">
-      <form id="wishlistForm" method="dialog">
-        <div class="dialog-heading">
-          <h2>Ajouter à la liste d’achat</h2>
-          <button class="icon-button" id="closeWishlistButton" type="button" aria-label="Fermer"><svg class="ui-icon"><use href="#icon-close"></use></svg></button>
-        </div>
-        <div class="form-grid">
-          <label>Domaine <input id="wishDomainInput" required></label>
-          <label>Cuvée <input id="wishCuveeInput" required></label>
-          <label>Couleur
-            <select id="wishColorInput">
-              <option>Rouge</option>
-              <option>Blanc</option>
-              <option value="Rose">Rosé</option>
-              <option>Effervescent</option>
-              <option>Liquoreux</option>
-            </select>
-          </label>
-          <label>Région <input id="wishRegionInput"></label>
-          <label>Budget (€) <input id="wishBudgetInput" type="number" min="0" step="0.01"></label>
-          <label>Priorité
-            <select id="wishPriorityInput">
-              <option value="medium">Moyenne</option>
-              <option value="high">Haute</option>
-              <option value="low">Basse</option>
-            </select>
-          </label>
-          <label class="full-width">Note <textarea id="wishNoteInput" rows="3"></textarea></label>
-        </div>
-        <div class="dialog-actions">
-          <button class="primary-action" type="submit">Ajouter</button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="tastingDialog">
-      <form id="tastingForm" method="dialog">
-        <div class="dialog-heading">
-          <h2>Note de dégustation</h2>
-          <button class="icon-button" id="closeTastingButton" type="button" aria-label="Fermer"><svg class="ui-icon"><use href="#icon-close"></use></svg></button>
-        </div>
-        <input id="tastingWineId" type="hidden">
-        <div class="form-grid">
-          <label>Date <input id="tastingDateInput" type="date"></label>
-          <label>Note / 5 <input id="tastingRatingInput" type="number" min="0" max="5" step="0.5"></label>
-          <label class="full-width">Commentaire <textarea id="tastingCommentInput" rows="3"></textarea></label>
-          <label>Accord mets-vins <input id="tastingPairingInput"></label>
-          <label class="checkbox-label"><input id="tastingRebuyInput" type="checkbox"> À racheter</label>
-        </div>
-        <div class="dialog-actions">
-          <button class="primary-action" type="submit">Enregistrer la note</button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="feedbackDialog">
-      <form id="feedbackForm" method="dialog">
-        <div class="dialog-heading">
-          <h2>Donner un avis</h2>
-          <button class="icon-button" id="closeFeedbackButton" type="button" aria-label="Fermer"><svg class="ui-icon"><use href="#icon-close"></use></svg></button>
-        </div>
-        <div class="form-grid">
-          <label>Satisfaction
-            <select id="feedbackSatisfactionInput">
-              <option value="5">5 - Très satisfait</option>
-              <option value="4">4 - Satisfait</option>
-              <option value="3">3 - Correct</option>
-              <option value="2">2 - Difficile</option>
-              <option value="1">1 - Bloquant</option>
-            </select>
-          </label>
-          <label class="full-width">Bug rencontré <textarea id="feedbackBugInput" rows="3"></textarea></label>
-          <label class="full-width">Suggestion <textarea id="feedbackSuggestionInput" rows="3"></textarea></label>
-        </div>
-        <div class="dialog-actions">
-          <button class="ghost-action" id="feedbackMailButton" type="button">Ouvrir un mail</button>
-          <button class="primary-action" type="submit">Exporter l’avis</button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="changelogDialog">
-      <div class="detail-shell">
-        <div class="dialog-heading">
-          <h2>Nouveautés</h2>
-          <button class="icon-button" id="closeChangelogButton" type="button" aria-label="Fermer"><svg class="ui-icon"><use href="#icon-close"></use></svg></button>
-        </div>
-        <ul class="changelog-list">
-          <li>Interface bêta plus chaleureuse et responsive.</li>
-          <li>Fiche bouteille détaillée avec journal de cave et notes.</li>
-          <li>À acheter, sommelier personnel local, rapport technique et sauvegardes.</li>
-          <li>Import/export JSON et CSV, impression PDF et PWA hors ligne.</li>
-        </ul>
-      </div>
-    </dialog>
-
-    <dialog id="confirmDialog">
-      <div class="confirm-shell">
-        <h2 id="confirmTitle">Confirmation</h2>
-        <p id="confirmMessage"></p>
-        <div class="dialog-actions">
-          <button class="ghost-action" id="confirmCancelButton" type="button">Annuler</button>
-          <button class="primary-action" id="confirmOkButton" type="button">Confirmer</button>
-        </div>
-      </div>
-    </dialog>
-
-    <section class="print-view" id="printView" aria-hidden="true"></section>
-
-    <script src="cloud-config.js"></script>
-    <script src="cloud-config-loader.js"></script>
-    <script src="src/shared-helpers.js"></script>
-    <script src="app.js"></script>
+    </footer>
   </body>
 </html>

@@ -1,6 +1,16 @@
-# Cave à vin
+# Oenova
 
-Mini application de gestion de cave à vin, installable en PWA et utilisable hors ligne.
+Site vitrine et application de gestion de cave à vin, installable en PWA et utilisable hors ligne.
+
+## Architecture web
+
+- `index.html` : site vitrine public Oenova.
+- `app.html` : application complète de gestion de cave.
+- `styles.css` : styles partagés, avec la vitrine isolée sous `.landing-body`.
+- `manifest.webmanifest` : installation PWA avec démarrage direct sur `app.html`.
+- `service-worker.js` : cache hors ligne de la vitrine et de l'application.
+
+Depuis la vitrine, le bouton **Ouvrir l'application** mène à `./app.html`. L'application reste utilisable sans compte et sans backend.
 
 ## Fonctionnalités
 
@@ -32,7 +42,7 @@ La version web reste fonctionnelle sans compte. Supabase est préparé avec `clo
 
 1. Dans Supabase, exécuter `supabase/schema.sql` depuis ce dépôt.
 2. Exécuter ensuite `supabase/seed.sql` depuis ce dépôt pour ajouter quelques références communes.
-3. Déployer `cloud-config.js` à côté de `index.html`.
+3. Déployer `cloud-config.js` à côté de `app.html`.
 4. Ne jamais placer de clé `service_role` ou de secret dans le frontend.
 
 `supabase-schema.sql` reste présent comme schéma minimal historique, mais le chemin de référence pour la version web est `supabase/schema.sql`.
@@ -50,7 +60,10 @@ Apres connexion, l'app verifie automatiquement le cloud :
 
 ## Utilisation locale
 
-Ouvrir `index.html` dans un navigateur, ou servir le dossier avec un petit serveur local.
+Servir le dossier avec un petit serveur local, puis ouvrir la vitrine ou l'application :
+
+- vitrine : `http://127.0.0.1:8080/`
+- application : `http://127.0.0.1:8080/app.html`
 
 Avec Node.js :
 
@@ -61,5 +74,7 @@ node -e "const http=require('http'),fs=require('fs'),path=require('path');http.c
 ## Publication GitHub Pages
 
 Le workflow GitHub Actions inclus publie automatiquement le site sur GitHub Pages à chaque push sur `main`.
+
+La racine GitHub Pages affiche la vitrine. L'application est disponible sous `/Oenova/app.html`.
 
 Dans GitHub, aller dans `Settings > Pages`, puis choisir `GitHub Actions` comme source.
