@@ -19,7 +19,8 @@
     status: document.querySelector("#landingAuthStatus"),
     sessionPanel: document.querySelector("#landingSessionPanel"),
     sessionEmail: document.querySelector("#landingSessionEmail"),
-    signOutButton: document.querySelector("#landingSignOutButton")
+    signOutButton: document.querySelector("#landingSignOutButton"),
+    entryPoints: document.querySelectorAll("[data-landing-auth-open]")
   };
 
   if (!auth || !elements.panel) return;
@@ -141,6 +142,9 @@
   async function start() {
     elements.tabs.forEach((tab) => {
       tab.addEventListener("click", () => setActiveMode(tab.dataset.landingAuthTab));
+    });
+    elements.entryPoints.forEach((entryPoint) => {
+      entryPoint.addEventListener("click", () => setActiveMode(entryPoint.dataset.landingAuthOpen));
     });
     elements.signUpForm.addEventListener("submit", handleSignUp);
     elements.signInForm.addEventListener("submit", handleSignIn);
