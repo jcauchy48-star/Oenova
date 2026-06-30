@@ -2903,6 +2903,7 @@ dialog[open] {
 }
 
 .landing-header-cta,
+.landing-header-login,
 .landing-button {
   align-items: center;
   border: 1px solid transparent;
@@ -2919,19 +2920,43 @@ dialog[open] {
   transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
+.landing-header-actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-self: end;
+}
+
+#landingAuthPanel {
+  scroll-margin-top: 88px;
+}
+
 .landing-header-cta {
   background: var(--landing-cream);
   color: #241417 !important;
   min-height: 42px;
 }
 
+.landing-header-login {
+  border-color: rgba(245, 238, 226, 0.28);
+  color: var(--landing-ivory) !important;
+  min-height: 42px;
+  padding-inline: 16px;
+}
+
 .landing-header-cta:hover,
+.landing-header-login:hover,
 .landing-button:hover {
   transform: translateY(-2px);
 }
 
 .landing-header-cta:hover {
   background: #fff;
+}
+
+.landing-header-login:hover {
+  background: rgba(245, 238, 226, 0.09);
+  border-color: rgba(245, 238, 226, 0.5);
 }
 
 .landing-body a:focus-visible,
@@ -4368,6 +4393,16 @@ dialog[open] {
     padding: 8px 12px;
   }
 
+  .landing-header-actions {
+    gap: 6px;
+  }
+
+  .landing-header-login {
+    font-size: 0.74rem;
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
   .landing-body h1 {
     font-size: 2.65rem;
   }
@@ -4581,6 +4616,24 @@ dialog[open] {
 
   .landing-footer-meta {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 390px) {
+  .landing-header-inner {
+    gap: 8px;
+    padding-inline: 10px;
+  }
+
+  .landing-brand {
+    font-size: 1.05rem;
+    gap: 7px;
+  }
+
+  .landing-header-cta,
+  .landing-header-login {
+    font-size: 0.68rem;
+    padding-inline: 8px;
   }
 }
 
