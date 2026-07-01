@@ -5,9 +5,12 @@
 - `localStorage` conserve les données locales de cave et des informations UI non sensibles.
 - Oenova utilise un compte unique Supabase Auth depuis la landing et l'application ; aucun second système d'identité n'est créé.
 - La session Supabase native est partagée entre `index.html` et `app.html` sur le même domaine.
+- Une session Supabase valide est obligatoire avant le chargement et le rendu des données de cave dans `app.html`.
+- Un accès direct à `app.html` sans session affiche uniquement l'écran de connexion requis.
 - Les `accessToken` et `refreshToken` Supabase ne doivent pas être écrits manuellement dans `localStorage` par le code applicatif.
 - Supabase JS gère sa session native lorsque le cloud est configuré.
 - Un profil utilisateur connu localement ne suffit pas : les actions cloud exigent une session Supabase utilisable.
+- Le passage par l'onglet Télécharger guide l'installation PWA. Cette étape améliore le parcours utilisateur ; la session Supabase reste la véritable barrière de sécurité.
 
 ## Supabase
 
@@ -34,3 +37,9 @@
 - Le paiement n'est pas configuré.
 - Les libellés d'abonnement et de packs scans sont préparatoires.
 - Toute future intégration paiement devra passer par un backend sécurisé.
+
+## Limites actuelles
+
+- Une première connexion nécessite un accès réseau à Supabase.
+- Les données historiques déjà présentes dans `localStorage` sont conservées et deviennent visibles après authentification sur le même appareil.
+- Le mode hors ligne repose sur une session déjà établie et les fichiers mis en cache par la PWA.

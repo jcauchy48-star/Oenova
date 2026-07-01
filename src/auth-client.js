@@ -67,7 +67,7 @@
   }
 
   function getEmailRedirectUrl() {
-    return new URL("./app.html?view=account&mode=signin", global.location.href).href;
+    return new URL("./index.html?tab=compte&mode=signin", global.location.href).href;
   }
 
   async function requireClient() {

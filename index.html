@@ -19,41 +19,43 @@
 
     <header class="landing-header">
       <div class="landing-header-inner">
-        <a class="landing-brand" href="#accueil" aria-label="Oenova, accueil">
+        <a class="landing-brand" href="?tab=accueil" data-site-tab-target="accueil" aria-label="Oenova, accueil">
           <img src="icon.svg" alt="" width="34" height="34">
           <span>Oenova</span>
         </a>
-        <nav class="landing-nav" aria-label="Navigation du site">
-          <a href="#fonctionnalites">Fonctionnalités</a>
-          <a href="#demo">Démo</a>
-          <a href="#confidentialite">Confidentialité</a>
-          <a href="#tarifs">Tarifs</a>
-          <a href="#faq">FAQ</a>
+        <nav class="landing-nav" role="tablist" aria-label="Navigation du site">
+          <a href="?tab=accueil" role="tab" data-site-tab="accueil">Accueil</a>
+          <a href="?tab=fonctionnalites" role="tab" data-site-tab="fonctionnalites">Fonctionnalités</a>
+          <a href="?tab=demo" role="tab" data-site-tab="demo">Démo</a>
+          <a href="?tab=tarifs" role="tab" data-site-tab="tarifs">Tarifs</a>
+          <a href="?tab=securite" role="tab" data-site-tab="securite">Sécurité</a>
+          <a href="?tab=telecharger" role="tab" data-site-tab="telecharger">Télécharger</a>
+          <a href="?tab=compte" role="tab" data-site-tab="compte">Compte</a>
         </nav>
         <div class="landing-header-actions" aria-label="Accès au compte">
-          <a class="landing-header-login" href="#landingAuthPanel" data-landing-auth-open="signin">Se connecter</a>
-          <a class="landing-header-cta" href="#landingAuthPanel" data-landing-auth-open="signup">Créer un compte</a>
+          <a class="landing-header-login" href="?tab=compte&amp;mode=signin" data-site-tab-target="compte" data-landing-auth-open="signin">Se connecter</a>
+          <a class="landing-header-cta" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer un compte</a>
         </div>
       </div>
     </header>
 
     <main id="contenu">
-      <section class="landing-hero" id="accueil" aria-labelledby="hero-title">
+      <section class="landing-hero" id="accueil" data-site-panel="accueil" aria-labelledby="hero-title">
         <div class="landing-container landing-hero-grid">
           <div class="landing-hero-copy">
             <p class="landing-overline">Oenova · Cave personnelle connectée</p>
             <h1 id="hero-title">Votre cave à vin,<br>enfin maîtrisée.</h1>
             <p class="landing-hero-lead">Créez votre espace Oenova, sauvegardez votre collection et retrouvez chaque bouteille sur tous vos supports.</p>
-            <p class="landing-hero-detail">Sans carte bancaire. Mode local disponible. Export à tout moment.</p>
+            <p class="landing-hero-detail">Compte requis. Installation requise. Sans carte bancaire. Export à tout moment.</p>
             <div class="landing-actions">
-              <a class="landing-button landing-button-primary" href="#landingAuthPanel" data-landing-auth-open="signup">Créer mon compte gratuit</a>
-              <a class="landing-button landing-button-secondary" href="#landingAuthPanel" data-landing-auth-open="signin">Se connecter</a>
-              <a class="landing-link-tertiary" href="./app.html">Essayer sans compte</a>
+              <a class="landing-button landing-button-primary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon compte gratuit</a>
+              <a class="landing-button landing-button-secondary" href="?tab=compte&amp;mode=signin" data-site-tab-target="compte" data-landing-auth-open="signin">Se connecter</a>
+              <a class="landing-link-tertiary" href="?tab=telecharger" data-site-tab-target="telecharger">Comment installer Oenova</a>
             </div>
             <ul class="landing-proof-list" aria-label="Avantages principaux">
               <li>Compte gratuit</li>
-              <li>Cloud optionnel</li>
-              <li>Contrôle total</li>
+              <li>Session sécurisée</li>
+              <li>Données exportables</li>
             </ul>
           </div>
 
@@ -61,7 +63,7 @@
             <div class="product-window">
               <div class="product-window-bar">
                 <span class="product-window-brand">OENOVA</span>
-                <span class="product-window-status">Cave locale</span>
+                <span class="product-window-status">Espace privé</span>
               </div>
               <div class="product-window-layout">
                 <div class="product-mini-nav" aria-hidden="true">
@@ -114,10 +116,10 @@
             <div class="product-stage-caption"><span>Collection privée</span><strong>Une vue claire, bouteille après bouteille.</strong></div>
           </div>
         </div>
-        <a class="landing-next" href="#constat">Découvrir Oenova <span aria-hidden="true">↓</span></a>
+        <a class="landing-next" href="?tab=fonctionnalites" data-site-tab-target="fonctionnalites">Découvrir Oenova <span aria-hidden="true">→</span></a>
       </section>
 
-      <section class="landing-problem" id="constat" aria-labelledby="problem-title">
+      <section class="landing-problem" id="constat" data-site-panel="accueil" aria-labelledby="problem-title">
         <div class="landing-container">
           <div class="landing-section-intro">
             <p class="landing-overline">Le plaisir, sans l’approximation</p>
@@ -132,7 +134,7 @@
         </div>
       </section>
 
-      <section class="landing-features" id="fonctionnalites" aria-labelledby="features-title">
+      <section class="landing-features" id="fonctionnalites" data-site-panel="fonctionnalites" aria-labelledby="features-title">
         <div class="landing-container">
           <div class="landing-section-intro landing-section-intro-split">
             <div><p class="landing-overline">Pensé pour les amateurs exigeants</p><h2 id="features-title">Tout ce qui compte, à sa place.</h2></div>
@@ -144,11 +146,11 @@
             <article class="feature-card feature-card-account"><span class="feature-index">03</span><div class="feature-visual feature-visual-account" aria-hidden="true"><i></i><i></i><b>O</b></div><h3>Compte multi-supports</h3><p>Créez votre espace Oenova et retrouvez votre cave sur vos appareils.</p><em>Une identité, plusieurs supports</em></article>
             <article class="feature-card feature-card-scan"><span class="feature-index">04</span><div class="feature-visual feature-visual-scan" aria-hidden="true"><i></i><span>MAISON OENOVA</span></div><h3>Scanner assisté</h3><p>Préremplissez une fiche, puis validez les informations avant ajout.</p><em>Analyse locale · IA optionnelle</em></article>
           </div>
-          <p class="feature-secondary-line">Notes de dégustation <span>·</span> Exports <span>·</span> Mode hors ligne <span>·</span> Cloud optionnel <span>·</span> Conseils de garde</p>
+          <p class="feature-secondary-line">Notes de dégustation <span>·</span> Exports <span>·</span> Mode hors ligne après connexion <span>·</span> Compte sécurisé <span>·</span> Conseils de garde</p>
         </div>
       </section>
 
-      <section class="landing-demo" id="demo" aria-labelledby="demo-title">
+      <section class="landing-demo" id="demo" data-site-panel="demo" aria-labelledby="demo-title">
         <div class="landing-container">
           <div class="landing-section-intro demo-intro">
             <p class="landing-overline">Au cœur d’Oenova</p>
@@ -179,11 +181,11 @@
               <p>Détection limitée · vérification avant ajout</p>
             </article>
           </div>
-          <div class="demo-action"><a class="landing-link-tertiary" href="./app.html">Explorer Oenova <span aria-hidden="true">→</span></a></div>
+          <div class="demo-action"><a class="landing-link-tertiary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon espace Oenova <span aria-hidden="true">→</span></a></div>
         </div>
       </section>
 
-      <section class="landing-beta" id="retours-beta" aria-labelledby="beta-title">
+      <section class="landing-beta" id="retours-beta" data-site-panel="accueil" aria-labelledby="beta-title">
         <div class="landing-container">
           <div class="landing-section-intro landing-section-intro-split">
             <div><p class="landing-overline">Retours bêta</p><h2 id="beta-title">Pensé avec les premiers utilisateurs.</h2></div>
@@ -198,31 +200,31 @@
         </div>
       </section>
 
-      <section class="landing-trust" id="confidentialite" aria-labelledby="trust-title">
+      <section class="landing-trust" id="confidentialite" data-site-panel="securite" aria-labelledby="trust-title">
         <div class="landing-container landing-trust-grid">
-          <div class="trust-statement"><p class="landing-overline">Confidentialité par défaut</p><h2 id="trust-title">Vos données restent à vous.</h2><p>Oenova privilégie une approche locale et transparente. Le cloud n’est jamais une condition pour commencer.</p><div class="trust-seal" aria-hidden="true"><span>O</span><small>Collection privée</small></div></div>
+          <div class="trust-statement"><p class="landing-overline">Confidentialité par défaut</p><h2 id="trust-title">Vos données restent à vous.</h2><p>Oenova protège l’accès à votre cave par un compte. Les données locales existantes restent sur votre appareil et peuvent être exportées à tout moment. Aucun paiement n’est actif et aucune donnée bancaire n’est demandée actuellement.</p><div class="trust-seal" aria-hidden="true"><span>O</span><small>Collection privée</small></div></div>
           <ul class="trust-list">
-            <li><span>01</span><strong>Oenova fonctionne localement par défaut.</strong></li>
-            <li><span>02</span><strong>Aucun compte obligatoire pour commencer.</strong></li>
-            <li><span>03</span><strong>Export possible à tout moment.</strong></li>
-            <li><span>04</span><strong>La synchronisation cloud est optionnelle.</strong></li>
+            <li><span>01</span><strong>Un compte valide est requis pour ouvrir la cave.</strong></li>
+            <li><span>02</span><strong>La session est gérée par Supabase Auth.</strong></li>
+            <li><span>03</span><strong>Vos exports restent disponibles à tout moment.</strong></li>
+            <li><span>04</span><strong>Aucune clé secrète n’est exposée dans le navigateur.</strong></li>
           </ul>
         </div>
       </section>
 
-      <section class="landing-auth" id="compte" aria-labelledby="landing-auth-title">
+      <section class="landing-auth" id="compte" data-site-panel="compte" aria-labelledby="landing-auth-title">
         <div class="landing-container landing-auth-layout">
           <div class="landing-auth-intro">
             <p class="landing-overline">Espace privé</p>
-            <h2 id="landing-auth-title">Votre espace privé Oenova.</h2>
-            <p>Un seul compte pour créer, sauvegarder et retrouver votre cave sur tous vos supports.</p>
+            <h2 id="landing-auth-title">Votre compte Oenova.</h2>
+            <p>Un compte est nécessaire pour accéder à l’application et préparer l’accès à votre cave sur vos supports.</p>
             <ul>
               <li><span>01</span><div><strong>Compte unique</strong><small>Une identité commune au site et à l’application.</small></div></li>
-              <li><span>02</span><div><strong>Cave synchronisable</strong><small>Le cloud reste un choix, jamais une obligation.</small></div></li>
+              <li><span>02</span><div><strong>Cave personnelle</strong><small>Votre collection est rattachée à une session authentifiée.</small></div></li>
               <li><span>03</span><div><strong>Accès multi-supports</strong><small>Retrouvez votre collection sur vos appareils.</small></div></li>
-              <li><span>04</span><div><strong>Mode local conservé</strong><small>Commencez sans compte et exportez à tout moment.</small></div></li>
+              <li><span>04</span><div><strong>Données maîtrisées</strong><small>Les données existantes sont conservées et restent exportables.</small></div></li>
             </ul>
-            <a class="landing-link-tertiary landing-auth-local-link" href="./app.html">Essayer sans compte <span aria-hidden="true">→</span></a>
+            <a class="landing-link-tertiary landing-auth-local-link" href="?tab=telecharger" data-site-tab-target="telecharger">Voir les étapes d’installation <span aria-hidden="true">→</span></a>
           </div>
 
           <div class="landing-auth-panel" id="landingAuthPanel">
@@ -245,7 +247,7 @@
                 <label>Email<input id="landingSignInEmail" type="email" autocomplete="email" inputmode="email" required></label>
                 <label>Mot de passe<input id="landingSignInPassword" type="password" autocomplete="current-password" required></label>
                 <button class="landing-button landing-button-primary" type="submit">Me connecter</button>
-                <a class="landing-auth-help-link" href="./app.html?view=account&amp;mode=signin">Mot de passe oublié ou email non confirmé ?</a>
+                <p class="landing-auth-help-link">Mot de passe oublié ou email non confirmé ? Vérifiez d’abord les messages envoyés par Oenova.</p>
               </form>
             </div>
 
@@ -253,7 +255,7 @@
               <span>Compte connecté</span>
               <strong id="landingSessionEmail"></strong>
               <div class="landing-session-actions">
-                <a class="landing-button landing-button-primary" href="./app.html?view=account">Ouvrir mon compte</a>
+                <a class="landing-button landing-button-primary" href="?tab=telecharger" data-site-tab-target="telecharger">Continuer vers le téléchargement</a>
                 <button class="landing-button landing-button-secondary" id="landingSignOutButton" type="button">Se déconnecter</button>
               </div>
             </div>
@@ -264,31 +266,41 @@
         </div>
       </section>
 
-      <section class="landing-install" id="installation" aria-labelledby="install-title">
+      <section class="landing-install" id="installation" data-site-panel="telecharger" aria-labelledby="install-title">
         <div class="landing-container install-layout">
           <div class="install-copy">
-            <p class="landing-overline">Installation</p>
-            <h2 id="install-title">Installez Oenova comme une application.</h2>
-            <p>La version actuelle s’installe directement depuis votre navigateur, sur ordinateur comme sur mobile.</p>
-            <a class="landing-button landing-button-primary" href="./app.html">Ouvrir l’application</a>
+            <p class="landing-overline">Télécharger</p>
+            <h2 id="install-title">Télécharger Oenova</h2>
+            <p>Installez Oenova comme une application, connectez votre compte, puis ouvrez votre cave privée.</p>
+            <p class="landing-install-state" data-install-state>Installation à vérifier sur cet appareil.</p>
+            <div class="landing-download-actions" data-auth-anonymous-only>
+              <p>Créez un compte ou connectez-vous pour accéder à l’application.</p>
+              <a class="landing-button landing-button-primary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer un compte</a>
+              <a class="landing-button landing-button-secondary" href="?tab=compte&amp;mode=signin" data-site-tab-target="compte" data-landing-auth-open="signin">Se connecter</a>
+            </div>
+            <div class="landing-download-session" data-auth-session-only hidden>
+              <span>Compte connecté</span>
+              <strong data-session-email></strong>
+              <a class="landing-button landing-button-primary" href="./app.html?installation=continue" data-continue-to-app>Continuer vers l’application</a>
+            </div>
           </div>
           <ol class="install-steps">
-            <li><span>01</span><div><strong>Ouvrir Oenova</strong><p>Lancez l’application depuis votre navigateur habituel.</p></div></li>
-            <li><span>02</span><div><strong>Ajouter à l’écran d’accueil</strong><p>Utilisez l’option d’installation proposée dans le menu du navigateur.</p></div></li>
-            <li><span>03</span><div><strong>Gérer sa cave partout</strong><p>Retrouvez une expérience dédiée et disponible hors ligne.</p></div></li>
+            <li><span>01</span><div><strong>Créer votre compte</strong><p>Votre session protège l’accès à votre collection.</p></div></li>
+            <li><span>02</span><div><strong>Installer la PWA</strong><p>Sur ordinateur, utilisez l’icône d’installation. Sur mobile, choisissez « Ajouter à l’écran d’accueil ».</p></div></li>
+            <li><span>03</span><div><strong>Ouvrir votre cave</strong><p>Revenez sur cet onglet après connexion pour continuer vers l’application.</p></div></li>
           </ol>
         </div>
       </section>
 
-      <section class="landing-pricing" id="tarifs" aria-labelledby="pricing-title">
+      <section class="landing-pricing" id="tarifs" data-site-panel="tarifs" aria-labelledby="pricing-title">
         <div class="landing-container">
           <div class="landing-section-intro">
             <p class="landing-overline">Tarifs</p>
             <h2 id="pricing-title">Commencez librement.</h2>
-            <p>Le cœur d’Oenova est accessible gratuitement en local. Les offres connectées sont encore en préparation.</p>
+            <p>Le cœur d’Oenova est accessible gratuitement avec un compte. Les offres payantes sont encore en préparation.</p>
           </div>
           <div class="landing-pricing-grid">
-            <article class="landing-pricing-card landing-pricing-card-current"><span class="landing-pricing-label">Disponible</span><h3>Local</h3><p class="landing-pricing-price">Gratuit</p><ul><li>Inventaire complet</li><li>Cave virtuelle</li><li>Exports JSON, CSV et PDF</li><li>Mode hors ligne</li></ul><a class="landing-button landing-button-primary" href="./app.html">Essayer sans compte</a></article>
+            <article class="landing-pricing-card landing-pricing-card-current"><span class="landing-pricing-label">Disponible</span><h3>Découverte</h3><p class="landing-pricing-price">Gratuit pendant la bêta</p><ul><li>Compte Oenova requis</li><li>Inventaire et cave virtuelle</li><li>Exports JSON, CSV et PDF</li><li>Scanner assisté local</li></ul><a class="landing-button landing-button-primary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon compte</a></article>
             <article class="landing-pricing-card"><span class="landing-pricing-label">En préparation</span><h3>Premium</h3><p class="landing-pricing-price">À venir</p><ul><li>Synchronisation cloud enrichie</li><li>Scanner IA avancé</li><li>Conseils personnalisés</li></ul><span class="landing-pricing-placeholder">Aucun paiement actif</span></article>
             <article class="landing-pricing-card"><span class="landing-pricing-label">En préparation</span><h3>Collectionneur</h3><p class="landing-pricing-price">À venir</p><ul><li>Rapports avancés</li><li>Valorisation de cave</li><li>Statistiques approfondies</li></ul><span class="landing-pricing-placeholder">Aucun paiement actif</span></article>
           </div>
@@ -296,30 +308,30 @@
         </div>
       </section>
 
-      <section class="landing-faq" id="faq" aria-labelledby="faq-title">
+      <section class="landing-faq" id="faq" data-site-panel="securite" aria-labelledby="faq-title">
         <div class="landing-container faq-layout">
           <div class="faq-heading"><p class="landing-overline">Questions fréquentes</p><h2 id="faq-title">Avant d’ouvrir votre cave.</h2><p>Des réponses simples sur le fonctionnement actuel d’Oenova.</p></div>
           <div class="faq-list">
-            <details open><summary>Est-ce gratuit ?</summary><p>Oui. Le mode local actuel est gratuit et aucun paiement réel n’est activé.</p></details>
-            <details><summary>Dois-je créer un compte ?</summary><p>Non. Vous pouvez utiliser Oenova localement sans compte. Un compte devient utile uniquement pour les fonctions cloud optionnelles.</p></details>
-            <details><summary>Mes données sont-elles privées ?</summary><p>Elles restent dans votre navigateur en mode local. Vous gardez la possibilité de les exporter à tout moment.</p></details>
-            <details><summary>L’application fonctionne-t-elle hors ligne ?</summary><p>Oui. Oenova est une PWA et conserve les fichiers nécessaires pour continuer à fonctionner hors connexion après une première ouverture.</p></details>
+            <details open><summary>Est-ce gratuit ?</summary><p>Oui. Le compte actuel est gratuit et aucun paiement réel n’est activé.</p></details>
+            <details><summary>Dois-je créer un compte ?</summary><p>Oui. Une session Oenova valide est nécessaire pour accéder à l’application et à votre cave.</p></details>
+            <details><summary>Mes données sont-elles privées ?</summary><p>L’accès est protégé par votre session. Les données locales existantes ne sont ni effacées ni envoyées sans action prévue par l’application.</p></details>
+            <details><summary>L’application fonctionne-t-elle hors ligne ?</summary><p>La PWA met ses fichiers en cache. Une session déjà établie peut être relue localement ; une première connexion nécessite internet.</p></details>
             <details><summary>Puis-je exporter ma cave ?</summary><p>Oui. Les exports JSON, CSV et la vue imprimable PDF sont disponibles depuis l’application.</p></details>
             <details><summary>Le scanner IA est-il disponible ?</summary><p>Une analyse locale limitée est disponible. L’analyse IA distante reste optionnelle et n’est utilisée que lorsqu’un service sécurisé est configuré.</p></details>
-            <details><summary>Comment installer l’application ?</summary><p>Ouvrez l’application puis utilisez l’option « Installer » ou « Ajouter à l’écran d’accueil » de votre navigateur.</p></details>
+            <details><summary>Comment installer l’application ?</summary><p>Connectez votre compte, ouvrez l’onglet Télécharger, puis utilisez l’option « Installer » ou « Ajouter à l’écran d’accueil » de votre navigateur.</p></details>
             <details><summary>Y aura-t-il une version mobile native ?</summary><p>Elle pourra être étudiée plus tard. Pour l’instant, la PWA offre une expérience installable sur ordinateur et mobile.</p></details>
           </div>
         </div>
       </section>
 
-      <section class="landing-final-cta" aria-labelledby="final-title">
+      <section class="landing-final-cta" data-site-panel="accueil" aria-labelledby="final-title">
         <div class="landing-container">
           <p class="landing-overline">Votre collection vous attend</p>
           <h2 id="final-title">Prêt à créer votre cave Oenova ?</h2>
-          <p>Créez votre compte gratuit ou commencez immédiatement en local. Vous gardez le contrôle de vos données.</p>
+          <p>Créez votre compte gratuit, installez Oenova et commencez votre collection dans un espace privé.</p>
           <div class="landing-final-actions">
-            <a class="landing-button landing-button-light" href="#landingAuthPanel" data-landing-auth-open="signup">Créer mon compte gratuit</a>
-            <a class="landing-button landing-button-secondary" href="./app.html">Essayer sans compte</a>
+            <a class="landing-button landing-button-light" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon compte gratuit</a>
+            <a class="landing-button landing-button-secondary" href="?tab=telecharger" data-site-tab-target="telecharger">Télécharger Oenova</a>
           </div>
         </div>
       </section>
@@ -327,14 +339,15 @@
 
     <footer class="landing-footer">
       <div class="landing-container landing-footer-grid">
-        <div><a class="landing-brand landing-footer-brand" href="#accueil"><img src="icon.svg" alt="" width="32" height="32"><span>Oenova</span></a><p>Application de gestion de cave à vin.</p></div>
-        <div class="landing-footer-links"><a href="./app.html">Ouvrir l’application</a><a href="./docs/security.md">Confidentialité et sécurité</a><a href="./docs/technical-roadmap.md">Feuille de route technique</a></div>
+        <div><a class="landing-brand landing-footer-brand" href="?tab=accueil" data-site-tab-target="accueil"><img src="icon.svg" alt="" width="32" height="32"><span>Oenova</span></a><p>Application de gestion de cave à vin.</p></div>
+        <div class="landing-footer-links"><a href="?tab=telecharger" data-site-tab-target="telecharger">Télécharger</a><a href="?tab=compte" data-site-tab-target="compte">Compte</a><a href="./docs/security.md">Confidentialité et sécurité</a><a href="./docs/technical-roadmap.md">Feuille de route technique</a></div>
         <div class="landing-footer-meta"><span>Version bêta</span><p>Conçu pour suivre, comprendre et apprécier chaque bouteille.</p></div>
       </div>
     </footer>
     <script src="cloud-config.js"></script>
     <script src="cloud-config-loader.js"></script>
     <script src="src/auth-client.js"></script>
+    <script src="src/landing-tabs.js"></script>
     <script src="src/landing-auth.js"></script>
   </body>
 </html>

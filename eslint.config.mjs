@@ -23,7 +23,7 @@ export default [
       globals: browserGlobals
     },
     rules: {
-      "no-dupe-func": "error",
+      "no-redeclare": "error",
       "no-unreachable": "error",
       "no-unused-vars": "warn"
     }
@@ -40,7 +40,7 @@ export default [
       }
     },
     rules: {
-      "no-dupe-func": "error",
+      "no-redeclare": "error",
       "no-unreachable": "error",
       "no-unused-vars": "warn"
     }
