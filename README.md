@@ -8,10 +8,27 @@ Site vitrine et application de gestion de cave à vin, installable en PWA et uti
 - `app.html` : application complète de gestion de cave.
 - `styles.css` : styles partagés, avec la vitrine isolée sous `.landing-body`.
 - `src/auth-client.js` : client Supabase Auth partagé par la vitrine et l'application.
-- `manifest.webmanifest` : installation PWA avec démarrage direct sur `app.html`.
+- `src/landing-tabs.js` : navigation accessible du site public et passage contrôlé vers l'installation.
+- `manifest.webmanifest` : installation PWA avec démarrage sur `app.html`, protégé par la session.
 - `service-worker.js` : cache hors ligne de la vitrine et de l'application.
 
-La vitrine privilégie désormais la création d'un compte Oenova partagé avec l'application. Le lien **Essayer sans compte** mène toujours à `./app.html`, qui reste entièrement utilisable en local et sans backend.
+La vitrine propose sept onglets (`?tab=accueil`, `fonctionnalites`, `demo`, `tarifs`, `securite`, `telecharger`, `compte`). La création ou la connexion à un compte Oenova est obligatoire avant l'ouverture de l'application.
+
+## Parcours utilisateur
+
+1. Découvrir Oenova depuis les onglets du site public.
+2. Créer un compte ou se connecter depuis l'onglet Compte.
+3. Suivre les instructions de l'onglet Télécharger pour installer la PWA.
+4. Continuer vers `app.html` avec une session Supabase valide.
+
+`app.html` reste verrouillée sans session. Une cave nouvellement créée est vide : les bouteilles de démonstration ne sont jamais injectées dans l'inventaire réel. L'installation est requise pour l'expérience complète ; un passage contrôlé depuis l'onglet Télécharger reste prévu pour les navigateurs qui ne proposent pas l'installation PWA.
+
+## Routes utiles
+
+- `index.html?tab=compte&mode=signup` : création de compte.
+- `index.html?tab=compte&mode=signin` : connexion.
+- `index.html?tab=telecharger` : installation et accès conditionnel.
+- `app.html` : application verrouillée par la session et le parcours d'installation.
 
 ## Fonctionnalités
 
@@ -39,26 +56,31 @@ La vitrine privilégie désormais la création d'un compte Oenova partagé avec 
 
 ## Comptes client et cloud
 
-La version web reste fonctionnelle sans compte. Supabase est préparé avec `cloud-config.js` et une clé publishable frontend.
+La version web exige un compte. Supabase est configuré avec `cloud-config.js` et une clé publishable frontend.
+
+### Configuration Supabase requise
+
+L'authentification Supabase est la source unique d'identité. L'URL du projet et sa clé publishable doivent être fournies dans `cloud-config.js`; aucune clé `service_role`, clé IA ou autre secret ne doit être ajouté au frontend.
 
 ### Compte Oenova unique
 
-- La création de compte et la connexion sont disponibles depuis `index.html` comme depuis `app.html`.
+- La création de compte et la connexion sont disponibles depuis l'onglet Compte de `index.html`; le verrou de `app.html` y renvoie si nécessaire.
 - Les deux pages utilisent le même projet Supabase Auth : il n'existe aucun compte séparé pour la vitrine.
 - La session Supabase native est partagée sur le même domaine, sans stockage manuel des `accessToken` ou `refreshToken` par le code Oenova.
-- Le compte reste optionnel. La cave fonctionne toujours en local et hors ligne sans connexion.
-- Les données locales restent sur l'appareil tant que l'utilisateur ne choisit pas de les synchroniser.
+- Une session Supabase valide est exigée avant que `app.html` charge et affiche les données de cave.
+- Les données locales existantes restent sur l'appareil et ne sont pas supprimées par cette évolution.
+- Un nouveau compte sur un navigateur vierge démarre avec une cave vide, sans bouteilles de démonstration injectées.
 - Après connexion, la vue Compte permet d'envoyer la cave locale vers Supabase ou de restaurer la dernière cave cloud.
 - Sur un autre navigateur ou appareil, il faut se connecter au même compte puis restaurer la cave cloud.
 
 Dans `Supabase Dashboard > Authentication > URL Configuration`, configurer :
 
 ```text
-Site URL: https://jcauchy48-star.github.io/Oenova/app.html
+Site URL: https://jcauchy48-star.github.io/Oenova/
 Redirect URLs: https://jcauchy48-star.github.io/Oenova/*
 ```
 
-Cette wildcard couvre la landing, `app.html` et les routes `?view=account&mode=signin|signup`.
+Cette wildcard couvre la landing, la confirmation de compte et les onglets `?tab=compte&mode=signin|signup`.
 
 1. Dans Supabase, exécuter `supabase/schema.sql` depuis ce dépôt.
 2. Exécuter ensuite `supabase/seed.sql` depuis ce dépôt pour ajouter quelques références communes.
@@ -78,9 +100,9 @@ Apres connexion, l'app verifie automatiquement le cloud :
 - si une cave cloud existe deja et qu'une cave locale est presente, l'utilisateur choisit depuis la vue Compte entre envoyer la cave locale ou restaurer le cloud ;
 - chaque modification personnelle est ensuite synchronisee automatiquement apres un court delai.
 
-## Utilisation locale
+## Développement local
 
-Servir le dossier avec un petit serveur local, puis ouvrir la vitrine ou l'application :
+Servir le dossier avec un petit serveur local, puis ouvrir la vitrine. Une configuration Supabase valide et un compte sont nécessaires pour déverrouiller l'application :
 
 - vitrine : `http://127.0.0.1:8080/`
 - application : `http://127.0.0.1:8080/app.html`

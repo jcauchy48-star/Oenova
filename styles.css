@@ -6065,3 +6065,180 @@ dialog[open] {
     display: none;
   }
 }
+
+/* Navigation par onglets du site public */
+.tabs-ready [data-site-panel][hidden] {
+  display: none !important;
+}
+
+.landing-nav a {
+  border-bottom: 2px solid transparent;
+  padding-block: 9px;
+  white-space: nowrap;
+}
+
+.landing-nav a.is-active {
+  border-bottom-color: var(--landing-gold);
+  color: var(--landing-ivory);
+}
+
+.landing-download-actions,
+.landing-download-session {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.landing-download-actions > p {
+  color: var(--landing-muted);
+  flex-basis: 100%;
+  margin: 0 0 4px;
+}
+
+.landing-download-session {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.landing-download-session > span {
+  color: var(--landing-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.landing-download-session > strong {
+  color: var(--landing-ivory);
+}
+
+.landing-install-state {
+  border-left: 2px solid var(--landing-gold);
+  color: var(--landing-gold-soft);
+  margin-top: 20px;
+  padding-left: 14px;
+}
+
+@media (max-width: 1180px) {
+  .landing-header-actions {
+    display: none;
+  }
+
+  .landing-header-inner {
+    grid-template-columns: auto 1fr;
+  }
+
+  .landing-nav {
+    justify-self: end;
+  }
+}
+
+@media (max-width: 860px) {
+  .landing-header-inner {
+    display: grid;
+    gap: 0 18px;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding-block: 10px 8px;
+  }
+
+  .landing-nav {
+    display: flex;
+    gap: 20px;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    overflow-x: auto;
+    padding: 4px 2px 0;
+    scrollbar-width: thin;
+  }
+
+  .landing-nav a {
+    flex: 0 0 auto;
+  }
+}
+
+/* Verrou d'accès à l'application */
+.app-access-gate {
+  align-items: center;
+  background: #171012;
+  color: #fffaf3;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 28px;
+  position: fixed;
+  z-index: 1000;
+}
+
+.app-access-gate[hidden],
+.app-layout[hidden],
+.mobile-menu-button[hidden] {
+  display: none !important;
+}
+
+.app-access-panel {
+  background: #fffaf3;
+  border: 1px solid rgba(200, 155, 60, 0.45);
+  border-radius: 8px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
+  color: #211b18;
+  max-width: 560px;
+  padding: clamp(30px, 6vw, 58px);
+  text-align: center;
+  width: 100%;
+}
+
+.app-access-brand {
+  align-items: center;
+  color: #8f1d3f;
+  display: inline-flex;
+  font-family: Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.app-access-brand img {
+  height: 38px;
+  width: 38px;
+}
+
+.app-access-panel h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 7vw, 3.25rem);
+  line-height: 1.05;
+  margin: 0 0 16px;
+}
+
+.app-access-panel p {
+  color: #6f625c;
+  line-height: 1.65;
+  margin: 0 auto 24px;
+  max-width: 44ch;
+}
+
+.app-access-actions {
+  align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.app-access-actions .primary-action,
+.app-access-actions .ghost-action {
+  justify-content: center;
+  min-height: 46px;
+  text-decoration: none;
+}
+
+@media (max-width: 560px) {
+  .app-access-gate {
+    padding: 16px;
+  }
+
+  .app-access-actions {
+    display: grid;
+  }
+}

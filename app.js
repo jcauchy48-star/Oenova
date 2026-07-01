@@ -27,6 +27,7 @@ const VISIBLE_WINE_PAGE_SIZE = 36;
 const DASHBOARD_WINE_LIMIT = 4;
 const CLOUD_REQUEST_TIMEOUT = 9000;
 const CLOUD_SYNC_DEBOUNCE = 1800;
+const INSTALL_FLOW_KEY = "oenova-install-flow-confirmed";
 const currentYear = new Date().getFullYear();
 
 const VALID_VIEWS = ["dashboard", "inventory", "cellar", "advice", "assistant", "wishlist", "history", "stats", "library", "scanner", "subscription", "account", "tools", "settings"];
@@ -179,7 +180,8 @@ const CSV_COLUMNS = [
   "slotId", "level", "positionLabel", "notes"
 ];
 
-const sampleWines = [
+// Jeu de démonstration réservé aux diagnostics explicites, jamais injecté dans la cave.
+if (DEBUG_PERF) void [
   {
     domain: "Domaine Leflaive",
     cuvee: "Bourgogne Blanc",
@@ -545,21 +547,21 @@ const sampleWines = [
   }
 ].map(normalizeWine);
 
-// État
-let wines = loadCellar();
-let movements = loadMovements();
-let wishlist = loadWishlist();
-let tastingNotes = loadTastingNotes();
-let errorLogs = loadErrorLogs();
-let wineLibrary = loadWineLibrary();
-let cellarLayouts = loadCellarLayouts();
-let aiEnrichmentQueue = loadAiEnrichmentQueue();
-let adviceFeedback = loadAdviceFeedback();
-let subscriptionState = loadSubscriptionState();
-let authState = loadAuthState();
+// État chargé uniquement après validation de la session.
+let wines = [];
+let movements = [];
+let wishlist = [];
+let tastingNotes = [];
+let errorLogs = [];
+let wineLibrary = [];
+let cellarLayouts = [];
+let aiEnrichmentQueue = [];
+let adviceFeedback = [];
+let subscriptionState = { ...DEFAULT_SUBSCRIPTION_STATE };
+let authState = normalizeAuthState();
 let authSession = { accessToken: "", refreshToken: "" };
-let cloudSyncState = loadCloudSyncState();
-let uiPreferences = loadUiPreferences();
+let cloudSyncState = normalizeCloudSyncState();
+let uiPreferences = { ...DEFAULT_UI_PREFERENCES };
 let preferredActiveView = CLIENT_VISIBLE_VIEWS.includes(requestedInitialView)
   ? requestedInitialView
   : VALID_VIEWS.includes(uiPreferences.activeView)
@@ -573,7 +575,7 @@ let activeNavKey = CLIENT_VISIBLE_VIEWS.includes(requestedInitialView)
   : CLIENT_VISIBLE_NAV_KEYS.includes(uiPreferences.activeNavKey)
     ? uiPreferences.activeNavKey
     : activeView;
-let modificationsSinceBackup = toNumber(localStorage.getItem(MODIFICATION_COUNT_KEY), 0);
+let modificationsSinceBackup = 0;
 let deferredInstallPrompt = null;
 let pendingConfirm = null;
 let lastUndo = null;
@@ -594,7 +596,7 @@ let libraryRemoteState = {
   lastError: "",
   lastCount: 0
 };
-let pendingLibrarySyncQueue = loadPendingLibrarySyncQueue();
+let pendingLibrarySyncQueue = [];
 let cellarLayoutCache = {
   layoutsById: new Map(),
   slotsById: new Map(),
@@ -624,6 +626,14 @@ let scanState = {
 
 // Selection DOM
 const elements = {
+  appAccessGate: document.querySelector("#appAccessGate"),
+  appAccessEyebrow: document.querySelector("#appAccessEyebrow"),
+  appAccessTitle: document.querySelector("#appAccessTitle"),
+  appAccessMessage: document.querySelector("#appAccessMessage"),
+  appAccessActions: document.querySelector("#appAccessActions"),
+  appAccessPrimary: document.querySelector("#appAccessPrimary"),
+  appAccessSecondary: document.querySelector("#appAccessSecondary"),
+  appAccessRetry: document.querySelector("#appAccessRetry"),
   appLayout: document.querySelector("#appLayout"),
   appSidebar: document.querySelector("#appSidebar"),
   sidebarBackdrop: document.querySelector("#sidebarBackdrop"),
@@ -674,6 +684,9 @@ const elements = {
   valueMaxFilter: document.querySelector("#valueMaxFilter"),
   resetFiltersButton: document.querySelector("#resetFiltersButton"),
   emptyAddButton: document.querySelector("#emptyAddButton"),
+  emptyScanButton: document.querySelector("#emptyScanButton"),
+  emptyStateTitle: document.querySelector("#emptyStateTitle"),
+  emptyStateMessage: document.querySelector("#emptyStateMessage"),
   sortSelect: document.querySelector("#sortSelect"),
   wineList: document.querySelector("#wineList"),
   watchList: document.querySelector("#watchList"),
@@ -866,7 +879,39 @@ const feedbackFields = {
 
 // Initialisation
 installRuntimeGuards();
-try {
+elements.appAccessRetry?.addEventListener("click", () => window.location.reload());
+bootstrapApplication().catch((error) => {
+  logError(error, "bootstrap");
+  showAppAccessGate("error", error);
+});
+
+async function bootstrapApplication() {
+  await window.CAVE_CLOUD_CONFIG_READY;
+  cloudConfig = getCloudConfig();
+  if (!window.OenovaAuth?.isCloudConfigured?.()) {
+    showAppAccessGate("unavailable");
+    return;
+  }
+
+  let session;
+  try {
+    session = await window.OenovaAuth.getCurrentSession();
+  } catch (error) {
+    showAppAccessGate("error", error);
+    return;
+  }
+  if (!hasValidAppSession(session)) {
+    showAppAccessGate("account");
+    return;
+  }
+
+  saveAuthFromSupabase({ session });
+  if (!isAppInstalled() && !hasCompletedInstallFlow()) {
+    showAppAccessGate("install");
+    return;
+  }
+
+  loadAuthorizedLocalState();
   migrateAppData();
   cellarLayouts = ensureCellarLayouts(cellarLayouts);
   syncCellarLayoutWithWines({ persist: false });
@@ -875,19 +920,115 @@ try {
   rebuildLibraryDerivedCaches();
   applyInitialUiState();
   bindEvents();
+  unlockApplication();
   render({ targets: ["view", "filters"] });
   applyInitialAccountRoute();
-  window.CAVE_CLOUD_CONFIG_READY?.then(() => {
-    cloudConfig = getCloudConfig();
-    initSupabase()
-      .then(() => syncPendingLibraryReferences({ silent: true }))
-      .then(() => ensureRemoteLibraryLoaded({ silent: true }))
-      .catch((error) => logError(error, "initSupabase"))
-      .finally(() => render({ targets: ["account", "sidebar", "library"] }));
-  });
-} catch (error) {
-  logError(error, "bootstrap");
-  showStartupError(error);
+
+  initSupabase()
+    .then(() => syncPendingLibraryReferences({ silent: true }))
+    .then(() => ensureRemoteLibraryLoaded({ silent: true }))
+    .catch((error) => logError(error, "initSupabase"))
+    .finally(() => render({ targets: ["account", "sidebar", "library"] }));
+}
+
+function loadAuthorizedLocalState() {
+  wines = loadCellar();
+  movements = loadMovements();
+  wishlist = loadWishlist();
+  tastingNotes = loadTastingNotes();
+  errorLogs = loadErrorLogs();
+  wineLibrary = loadWineLibrary();
+  cellarLayouts = loadCellarLayouts();
+  aiEnrichmentQueue = loadAiEnrichmentQueue();
+  adviceFeedback = loadAdviceFeedback();
+  subscriptionState = loadSubscriptionState();
+  authState = loadAuthState();
+  cloudSyncState = loadCloudSyncState();
+  uiPreferences = loadUiPreferences();
+  pendingLibrarySyncQueue = loadPendingLibrarySyncQueue();
+  modificationsSinceBackup = toNumber(localStorage.getItem(MODIFICATION_COUNT_KEY), 0);
+  preferredActiveView = CLIENT_VISIBLE_VIEWS.includes(requestedInitialView)
+    ? requestedInitialView
+    : VALID_VIEWS.includes(uiPreferences.activeView)
+      ? uiPreferences.activeView
+      : VALID_VIEWS.includes(uiPreferences.defaultView)
+        ? uiPreferences.defaultView
+        : "dashboard";
+  activeView = CLIENT_VISIBLE_VIEWS.includes(preferredActiveView) ? preferredActiveView : "dashboard";
+  activeNavKey = CLIENT_VISIBLE_VIEWS.includes(requestedInitialView)
+    ? requestedInitialView
+    : CLIENT_VISIBLE_NAV_KEYS.includes(uiPreferences.activeNavKey)
+      ? uiPreferences.activeNavKey
+      : activeView;
+  activeCellarLayoutId = cellarLayouts[0]?.id || "";
+}
+
+function isAppInstalled() {
+  return window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone === true;
+}
+
+function hasValidAppSession(session) {
+  if (!session?.user?.id || !session?.access_token) return false;
+  return !session.expires_at || Number(session.expires_at) > Math.floor(Date.now() / 1000);
+}
+
+function hasCompletedInstallFlow() {
+  return initialRouteParams.get("installation") === "continue"
+    && sessionStorage.getItem(INSTALL_FLOW_KEY) === "true";
+}
+
+function unlockApplication() {
+  elements.appAccessGate.hidden = true;
+  elements.appLayout.hidden = false;
+  elements.mobileMenuButton.hidden = false;
+  document.body.classList.add("app-access-granted");
+}
+
+function showAppAccessGate(state, error) {
+  const content = {
+    account: {
+      eyebrow: "Compte requis",
+      title: "Connectez-vous pour ouvrir votre cave",
+      message: "L'accès à Oenova nécessite désormais un compte valide. Votre cave locale existante reste conservée sur cet appareil.",
+      primary: ["Se connecter", "./index.html?tab=compte&mode=signin"],
+      secondary: ["Créer un compte", "./index.html?tab=compte&mode=signup"]
+    },
+    install: {
+      eyebrow: "Installation requise",
+      title: "Installez Oenova avant de continuer",
+      message: "Ouvrez l'onglet Télécharger pour installer la PWA. Si votre navigateur ne propose pas l'installation, le parcours vous permettra de continuer dans le navigateur.",
+      primary: ["Voir les étapes d'installation", "./index.html?tab=telecharger"],
+      secondary: ["Retour au compte", "./index.html?tab=compte"]
+    },
+    unavailable: {
+      eyebrow: "Service indisponible",
+      title: "Les comptes Oenova ne sont pas configurés",
+      message: "La configuration Supabase est nécessaire pour ouvrir l'application. Réessayez lorsque le service de compte est disponible.",
+      primary: ["Retour au site", "./index.html?tab=accueil"],
+      secondary: ["Sécurité", "./index.html?tab=securite"]
+    },
+    error: {
+      eyebrow: "Connexion interrompue",
+      title: "Impossible de vérifier votre session",
+      message: error?.message ? `La vérification a échoué : ${cleanString(error.message)}` : "Vérifiez votre connexion puis réessayez.",
+      primary: ["Se connecter", "./index.html?tab=compte&mode=signin"],
+      secondary: ["Retour au site", "./index.html?tab=accueil"]
+    }
+  }[state] || null;
+  if (!content) return;
+
+  elements.appLayout.hidden = true;
+  elements.mobileMenuButton.hidden = true;
+  elements.appAccessGate.hidden = false;
+  elements.appAccessEyebrow.textContent = content.eyebrow;
+  elements.appAccessTitle.textContent = content.title;
+  elements.appAccessMessage.textContent = content.message;
+  elements.appAccessPrimary.textContent = content.primary[0];
+  elements.appAccessPrimary.href = content.primary[1];
+  elements.appAccessSecondary.textContent = content.secondary[0];
+  elements.appAccessSecondary.href = content.secondary[1];
+  elements.appAccessRetry.hidden = state !== "error";
+  elements.appAccessActions.hidden = false;
 }
 
 // Evenements
@@ -915,6 +1056,7 @@ function bindEvents() {
   elements.openAccountButton?.addEventListener("click", () => setActiveView("account", { navKey: "account" }));
   elements.openScannerButton?.addEventListener("click", () => setActiveView("scanner", { navKey: "scanner" }));
   elements.emptyAddButton.addEventListener("click", () => openForm());
+  elements.emptyScanButton?.addEventListener("click", () => setActiveView("scanner", { navKey: "scanner" }));
   elements.closeDialogButton.addEventListener("click", () => elements.dialog.close());
   elements.form.addEventListener("submit", saveWineFromForm);
   elements.deleteButton.addEventListener("click", deleteCurrentWine);
@@ -1428,16 +1570,16 @@ function getFilterCacheKey() {
 function loadCellar() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (!stored) {
-    return sampleWines;
+    return [];
   }
 
   try {
     const parsed = JSON.parse(stored);
     const rawWines = Array.isArray(parsed) ? parsed : parsed.wines;
-    if (!Array.isArray(rawWines)) return sampleWines;
+    if (!Array.isArray(rawWines)) return [];
     return migrateWines(rawWines);
   } catch {
-    return sampleWines;
+    return [];
   }
 }
 
@@ -2155,6 +2297,14 @@ function renderWineList(filtered) {
   return measurePerf("renderWineList", () => {
     elements.wineList.innerHTML = "";
     elements.emptyState.hidden = filtered.length > 0;
+    if (!filtered.length) {
+      const isNewCellar = wines.length === 0;
+      elements.emptyStateTitle.textContent = isNewCellar ? "Votre cave est vide" : "Aucun vin trouvé";
+      elements.emptyStateMessage.textContent = isNewCellar
+        ? "Ajoutez votre première bouteille."
+        : "Aucune bouteille ne correspond à cette recherche. Modifiez ou réinitialisez les filtres.";
+      elements.emptyScanButton.hidden = !isNewCellar;
+    }
     const fragment = document.createDocumentFragment();
     const isDashboard = activeView === "dashboard";
     const maxVisible = isDashboard ? DASHBOARD_WINE_LIMIT : visibleWineLimit;
@@ -5323,6 +5473,7 @@ async function onAuthStateChanged(callback) {
       syncPendingLibraryReferences({ silent: true });
     } else if (event === "SIGNED_OUT") {
       clearAuthState();
+      showAppAccessGate("account");
     }
     renderAuthState();
     if (typeof callback === "function") callback(event, session);
@@ -5348,7 +5499,7 @@ function renderUserBadge() {
   if (sidebarSubtitle) {
     if (signedIn) sidebarSubtitle.textContent = "Cloud connecté";
     else if (knownProfile) sidebarSubtitle.textContent = "Session à reconnecter";
-    else sidebarSubtitle.textContent = configured ? "Cloud prêt" : "Version locale";
+    else sidebarSubtitle.textContent = configured ? "Connexion requise" : "Service indisponible";
   }
   if (elements.openAccountButton) {
     elements.openAccountButton.innerHTML = `<svg class="ui-icon"><use href="#icon-account"></use></svg>${signedIn ? "Compte" : "Connexion"}`;
@@ -5683,8 +5834,8 @@ async function signOutUser() {
     // La déconnexion locale reste prioritaire.
   }
   clearAuthState();
-  renderAuthState();
-  showStatus("Déconnecté.");
+  sessionStorage.removeItem(INSTALL_FLOW_KEY);
+  showAppAccessGate("account");
 }
 
 function saveAuthFromSupabase(data = {}) {

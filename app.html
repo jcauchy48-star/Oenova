@@ -13,6 +13,23 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <section class="app-access-gate" id="appAccessGate" aria-labelledby="appAccessTitle" aria-live="polite">
+      <div class="app-access-panel">
+        <a class="app-access-brand" href="./index.html?tab=accueil" aria-label="Retour au site Oenova">
+          <img src="icon.svg" alt="" width="38" height="38">
+          <span>Oenova</span>
+        </a>
+        <p class="eyebrow" id="appAccessEyebrow">Vérification de l’accès</p>
+        <h1 id="appAccessTitle">Ouverture de votre cave…</h1>
+        <p id="appAccessMessage">Nous vérifions votre session Oenova sur cet appareil.</p>
+        <div class="app-access-actions" id="appAccessActions" hidden>
+          <a class="primary-action" id="appAccessPrimary" href="./index.html?tab=compte&amp;mode=signin">Se connecter</a>
+          <a class="ghost-action" id="appAccessSecondary" href="./index.html?tab=compte&amp;mode=signup">Créer un compte</a>
+          <button class="ghost-action" id="appAccessRetry" type="button" hidden>Réessayer</button>
+        </div>
+      </div>
+    </section>
+
     <svg class="svg-sprite" aria-hidden="true" focusable="false">
       <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
       <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
@@ -41,18 +58,18 @@
       <symbol id="icon-account" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
     </svg>
     <div class="ambient-vines" aria-hidden="true"></div>
-    <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-controls="appSidebar" aria-expanded="false" aria-label="Ouvrir la navigation">
+    <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-controls="appSidebar" aria-expanded="false" aria-label="Ouvrir la navigation" hidden>
       <svg class="ui-icon"><use href="#icon-menu"></use></svg>
     </button>
     <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
 
-    <div class="app-layout" id="appLayout">
+    <div class="app-layout" id="appLayout" hidden>
       <aside class="app-sidebar" id="appSidebar" aria-label="Navigation principale">
         <div class="sidebar-header">
           <div class="sidebar-brand" aria-hidden="true"><svg class="ui-icon"><use href="#icon-bottle"></use></svg></div>
           <div class="sidebar-title">
             <strong>Cave à vin</strong>
-            <span>Version locale</span>
+            <span>Espace privé</span>
           </div>
           <div class="sidebar-badges" aria-label="Abonnement et scans" data-client-hidden>
             <span id="sidebarPlanBadge" class="plan-badge">Gratuit</span>
@@ -723,9 +740,12 @@
           <div class="compact-stats" id="compactStats"></div>
           <div class="wine-list" id="wineList"></div>
           <div class="empty-state" id="emptyState" hidden>
-            <h3>Aucun vin trouvé</h3>
-            <p>Ajoute une référence ou ajuste les filtres pour retrouver tes bouteilles.</p>
-            <button class="primary-action" id="emptyAddButton" type="button"><svg class="ui-icon"><use href="#icon-plus"></use></svg>Ajouter une bouteille</button>
+            <h3 id="emptyStateTitle">Votre cave est vide</h3>
+            <p id="emptyStateMessage">Ajoutez votre première bouteille.</p>
+            <div class="empty-state-actions">
+              <button class="primary-action" id="emptyAddButton" type="button"><svg class="ui-icon"><use href="#icon-plus"></use></svg>Ajouter une bouteille</button>
+              <button class="ghost-action" id="emptyScanButton" type="button"><svg class="ui-icon"><use href="#icon-scan"></use></svg>Scanner une étiquette</button>
+            </div>
           </div>
         </div>
 
